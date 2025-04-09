@@ -2,7 +2,6 @@ import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-nati
 import { router } from 'expo-router';
 
 export default function Historico() {
-  // mock de pedidos
   const pedidos = [
     { id: 1, cliente: 'João', produto: 'Cerveja', valor: '10,00' },
     { id: 2, cliente: 'Maria', produto: 'Refrigerante', valor: '8,00' },
@@ -18,16 +17,16 @@ export default function Historico() {
 
       <View style={styles.filtroRow}>
         <TouchableOpacity style={styles.filtroBtn}>
-          <Text>Filtro</Text>
+          <Text style={styles.filtroBtnText}>Filtro</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.tabela}>
         <View style={styles.header}>
-          <Text style={styles.col}>Id Produto</Text>
-          <Text style={styles.col}>Nome Cliente</Text>
-          <Text style={styles.col}>Produto</Text>
-          <Text style={styles.col}>Valor</Text>
+          <Text style={styles.colHeader}>Id Produto</Text>
+          <Text style={styles.colHeader}>Nome Cliente</Text>
+          <Text style={styles.colHeader}>Produto</Text>
+          <Text style={styles.colHeader}>Valor</Text>
         </View>
 
         {pedidos.map((p) => (
@@ -47,11 +46,15 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
   voltar: {
     padding: 10,
-    backgroundColor: '#ddd',
+    backgroundColor: '#ffd700',
     alignSelf: 'flex-start',
     margin: 10,
+    borderRadius: 6,
   },
-  voltarText: { color: '#000' },
+  voltarText: {
+    color: '#160b30',
+    fontWeight: 'bold',
+  },
   filtroRow: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
@@ -59,28 +62,45 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   filtroBtn: {
-    backgroundColor: '#ccc',
+    backgroundColor: '#160b30',
     padding: 10,
+    borderRadius: 6,
+  },
+  filtroBtnText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
   tabela: {
-    backgroundColor: '#ddd',
+    backgroundColor: '#f5f5f5',
     margin: 10,
     borderWidth: 1,
-    borderColor: '#aaa',
+    borderColor: '#160b30',
+    borderRadius: 8,
   },
   header: {
     flexDirection: 'row',
-    backgroundColor: '#ccc',
+    backgroundColor: '#160b30',
     padding: 10,
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+  },
+  colHeader: {
+    flex: 1,
+    textAlign: 'center',
+    color: '#fff',
+    fontWeight: 'bold',
   },
   row: {
     flexDirection: 'row',
     borderTopWidth: 1,
-    borderColor: '#aaa',
+    borderColor: '#ccc',
     padding: 10,
+    backgroundColor: '#fff',
   },
   col: {
     flex: 1,
     textAlign: 'center',
+    color: '#160b30',
+    fontWeight: '500',
   },
 });

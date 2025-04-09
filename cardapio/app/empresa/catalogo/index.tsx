@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 
-// Tipagem de produto e categoria para evitar erro "never"
 type Produto = {
   id: number;
   nome: string;
@@ -93,7 +92,7 @@ export default function Catalogo() {
             setModalVisible(true);
           }}
         >
-          <Text>Adicionar Categoria</Text>
+          <Text style={styles.textoBotaoAcao}>Adicionar Categoria</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.botaoAcao}
@@ -102,7 +101,7 @@ export default function Catalogo() {
             setModalVisible(true);
           }}
         >
-          <Text>Adicionar Produto</Text>
+          <Text style={styles.textoBotaoAcao}>Adicionar Produto</Text>
         </TouchableOpacity>
       </View>
 
@@ -112,7 +111,7 @@ export default function Catalogo() {
           <View style={styles.linhaProdutos}>
             {categoria.produtos.map((produto) => (
               <View key={produto.id} style={styles.cardProduto}>
-                <Text>{produto.nome}</Text>
+                <Text style={styles.textoProduto}>{produto.nome}</Text>
               </View>
             ))}
           </View>
@@ -122,7 +121,6 @@ export default function Catalogo() {
       <Modal visible={modalVisible} transparent animationType="fade">
         <View style={styles.overlayModal}>
           <View style={styles.modalCard}>
-            {/* Botão X para fechar */}
             <TouchableOpacity style={styles.botaoFechar} onPress={() => setModalVisible(false)}>
               <Text style={styles.textoFechar}>X</Text>
             </TouchableOpacity>
@@ -136,6 +134,7 @@ export default function Catalogo() {
                 style={styles.input}
                 placeholder="Nome"
                 value={formulario.nome}
+                placeholderTextColor="#999"
                 onChangeText={(texto) => setFormulario({ ...formulario, nome: texto })}
               />
               {formulario.tipo === 'produto' && (
@@ -143,6 +142,7 @@ export default function Catalogo() {
                   style={[styles.input, styles.caixaFoto]}
                   placeholder="URL da foto"
                   value={formulario.foto}
+                  placeholderTextColor="#999"
                   onChangeText={(texto) => setFormulario({ ...formulario, foto: texto })}
                 />
               )}
@@ -153,6 +153,7 @@ export default function Catalogo() {
                 <TextInput
                   style={styles.input}
                   placeholder="Descrição"
+                  placeholderTextColor="#999"
                   value={formulario.descricao}
                   onChangeText={(texto) => setFormulario({ ...formulario, descricao: texto })}
                 />
@@ -160,6 +161,7 @@ export default function Catalogo() {
                   <TextInput
                     style={styles.input}
                     placeholder="ID da Categoria"
+                    placeholderTextColor="#999"
                     keyboardType="numeric"
                     value={formulario.categoriaId}
                     onChangeText={(texto) => setFormulario({ ...formulario, categoriaId: texto })}
@@ -167,6 +169,7 @@ export default function Catalogo() {
                   <TextInput
                     style={styles.input}
                     placeholder="Valor"
+                    placeholderTextColor="#999"
                     keyboardType="decimal-pad"
                     value={formulario.valor}
                     onChangeText={(texto) => setFormulario({ ...formulario, valor: texto })}
@@ -176,7 +179,7 @@ export default function Catalogo() {
             )}
 
             <TouchableOpacity style={styles.botaoAdicionar} onPress={adicionarItem}>
-              <Text>Adicionar</Text>
+              <Text style={styles.textoAdicionar}>Adicionar</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -187,19 +190,37 @@ export default function Catalogo() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
-  botaoVoltar: { padding: 10, backgroundColor: '#ddd', alignSelf: 'flex-start', margin: 10 },
-  textoVoltar: { color: '#000' },
+  botaoVoltar: {
+    padding: 10,
+    backgroundColor: '#ffd700',
+    alignSelf: 'flex-start',
+    margin: 10,
+    borderRadius: 6,
+  },
+  textoVoltar: { color: '#160b30', fontWeight: 'bold' },
   acoes: { flexDirection: 'row', gap: 10, paddingHorizontal: 10, marginBottom: 10 },
-  botaoAcao: { backgroundColor: '#ccc', padding: 10 },
+  botaoAcao: { backgroundColor: '#160b30', padding: 10, borderRadius: 6 },
+  textoBotaoAcao: { color: '#fff', fontWeight: 'bold' },
   secao: { marginBottom: 20, paddingHorizontal: 10 },
-  tituloSecao: { backgroundColor: '#ddd', padding: 5, marginBottom: 10 },
+  tituloSecao: {
+    backgroundColor: '#160b30',
+    color: '#fff',
+    padding: 5,
+    marginBottom: 10,
+    fontWeight: 'bold',
+  },
   linhaProdutos: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   cardProduto: {
-    backgroundColor: '#ddd',
+    backgroundColor: '#ffd700',
     width: 100,
     height: 100,
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: 6,
+  },
+  textoProduto: {
+    color: '#160b30',
+    fontWeight: 'bold',
   },
   overlayModal: {
     flex: 1,
@@ -209,16 +230,18 @@ const styles = StyleSheet.create({
   },
   modalCard: {
     backgroundColor: '#fff',
-    borderColor: '#000',
+    borderColor: '#160b30',
     borderWidth: 1,
     width: '80%',
     padding: 20,
     gap: 12,
     position: 'relative',
+    borderRadius: 8,
   },
   tituloModal: {
     textAlign: 'center',
     fontWeight: 'bold',
+    color: '#160b30',
   },
   linhaModal: {
     flexDirection: 'row',
@@ -226,33 +249,45 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   input: {
-    backgroundColor: '#eee',
+    backgroundColor: '#f0f0f0',
     padding: 10,
     flex: 1,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#160b30',
+    color: '#160b30',
   },
   caixaFoto: {
     justifyContent: 'center',
     alignItems: 'center',
   },
   botaoAdicionar: {
-    backgroundColor: '#ccc',
+    backgroundColor: '#ffd700',
     padding: 12,
     alignItems: 'center',
+    borderRadius: 6,
+  },
+  textoAdicionar: {
+    color: '#160b30',
+    fontWeight: 'bold',
   },
   botaoFechar: {
     position: 'absolute',
     top: 8,
     right: 8,
     zIndex: 1,
-    backgroundColor: '#eee',
+    backgroundColor: '#f0f0f0',
     borderRadius: 20,
     width: 28,
     height: 28,
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#160b30',
   },
   textoFechar: {
     fontWeight: 'bold',
     fontSize: 16,
+    color: '#160b30',
   },
 });

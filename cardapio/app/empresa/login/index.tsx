@@ -41,12 +41,14 @@ export default function Login() {
         <Text style={styles.label}>CPF:</Text>
         <TextInput
           placeholder="Digite seu CPF"
+          placeholderTextColor="#999"
           style={styles.input}
           onChangeText={setCpf}
         />
         <Text style={styles.label}>Senha:</Text>
         <TextInput
           placeholder="Digite sua senha"
+          placeholderTextColor="#999"
           style={styles.input}
           secureTextEntry
           onChangeText={setSenha}
@@ -61,24 +63,33 @@ export default function Login() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
-  banner: { width: '100%', height: 250, backgroundColor: '#ccc' },
+  banner: { width: '100%', height: 250, backgroundColor: '#eee' },
   form: { padding: 20 },
-  label: { marginBottom: 4, fontSize: 14, color: '#000' },
+  label: {
+    marginBottom: 4,
+    fontSize: 14,
+    color: '#160b30',
+    fontWeight: '600',
+  },
   input: {
-    backgroundColor: '#ddd',
+    backgroundColor: '#f0f0f0',
     padding: 10,
-    borderRadius: 4,
+    borderRadius: 8,
     marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#160b30',
+    color: '#160b30',
   },
   button: {
-    backgroundColor: '#ccc',
+    backgroundColor: '#ffd700',
     padding: 12,
     alignItems: 'center',
-    borderRadius: 4,
+    borderRadius: 8,
     marginTop: 10,
   },
   buttonText: {
-    color: '#000',
+    color: '#160b30',
     fontWeight: 'bold',
+    fontSize: 16,
   },
 });

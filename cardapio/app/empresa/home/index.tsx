@@ -14,11 +14,11 @@ export default function Home() {
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={() => router.push('/empresa/catalogo')}>
-          <Text style={styles.buttonText}>Catalogo</Text>
+          <Text style={styles.buttonText}>Catálogo</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.button} onPress={() => router.push('/empresa/historico')}>
-          <Text style={styles.buttonText}>Historico</Text>
+          <Text style={styles.buttonText}>Histórico</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.button} onPress={() => router.push('/empresa/kds')}>
@@ -35,9 +35,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   logoContainer: {
-    backgroundColor: '#ddd',
+    backgroundColor: '#fff',
     alignItems: 'center',
     padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#160b30',
   },
   logo: {
     width: 150,
@@ -48,12 +50,16 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   button: {
-    backgroundColor: '#ccc',
+    backgroundColor: '#ffd700',
     padding: 20,
-    borderRadius: 4,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#160b30',
+    alignItems: 'center',
   },
   buttonText: {
-    color: '#000',
+    color: '#160b30',
     fontSize: 16,
+    fontWeight: 'bold',
   },
 });

@@ -64,13 +64,13 @@ export default function KDS() {
   const corStatus = (status: string) => {
     switch (status) {
       case 'confirmado':
-        return 'green';
+        return '#160b30';
       case 'cancelado':
-        return 'red';
+        return '#ff4d4d';
       case 'pronto':
-        return 'pink';
+        return '#ffd700';
       default:
-        return 'gold';
+        return '#999';
     }
   };
 
@@ -90,18 +90,18 @@ export default function KDS() {
       </TouchableOpacity>
 
       <View style={styles.headerBar}>
-        <View style={[styles.statusBlock, { backgroundColor: 'pink' }]} />
-        <Text>Produtos Prontos</Text>
+        <View style={[styles.statusBlock, { backgroundColor: '#ffd700' }]} />
+        <Text style={styles.headerBarText}>Produtos Prontos</Text>
       </View>
 
       <View style={styles.header}>
         <View style={styles.statusCol}></View>
-        <Text style={styles.col}>Id do Produto</Text>
-        <Text style={styles.col}>Nome Cliente</Text>
+        <Text style={styles.col}>Id</Text>
+        <Text style={styles.col}>Cliente</Text>
         <Text style={styles.col}>Produto</Text>
-        <Text style={styles.col}>valor</Text>
-        <Text style={styles.col}>cancelar</Text>
-        <Text style={styles.col}>confirmar</Text>
+        <Text style={styles.col}>Valor</Text>
+        <Text style={styles.col}>Cancelar</Text>
+        <Text style={styles.col}>Confirmar</Text>
         <Text style={styles.col}>✓</Text>
       </View>
 
@@ -119,21 +119,21 @@ export default function KDS() {
             style={styles.btn}
             onPress={() => atualizarStatus(p.id, 'cancelado')}
           >
-            <Text>X</Text>
+            <Text style={styles.btnText}>X</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.btn}
             onPress={() => atualizarStatus(p.id, 'confirmado')}
           >
-            <Text>✔</Text>
+            <Text style={styles.btnText}>✔</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.btn}
             onPress={() => atualizarStatus(p.id, 'pronto')}
           >
-            <Text>{segundosParaTempo(p.criadoEm)}</Text>
+            <Text style={styles.btnText}>{segundosParaTempo(p.criadoEm)}</Text>
           </TouchableOpacity>
         </View>
       ))}
@@ -145,50 +145,68 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
   voltar: {
     padding: 10,
-    backgroundColor: '#ddd',
+    backgroundColor: '#ffd700',
     alignSelf: 'flex-start',
     margin: 10,
+    borderRadius: 6,
   },
-  voltarText: { color: '#000' },
+  voltarText: {
+    color: '#160b30',
+    fontWeight: 'bold',
+  },
   headerBar: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
     padding: 10,
-    backgroundColor: '#f4dede',
+    backgroundColor: '#fdf5d4',
+  },
+  headerBarText: {
+    color: '#160b30',
+    fontWeight: 'bold',
   },
   statusBlock: {
     width: 20,
     height: 20,
+    borderRadius: 4,
   },
   header: {
     flexDirection: 'row',
     padding: 5,
-    backgroundColor: '#ccc',
+    backgroundColor: '#160b30',
     alignItems: 'center',
   },
   row: {
     flexDirection: 'row',
     padding: 10,
-    backgroundColor: '#ddd',
+    backgroundColor: '#f2f2f2',
     borderBottomWidth: 1,
-    borderColor: '#aaa',
+    borderColor: '#ccc',
     alignItems: 'center',
   },
   col: {
     flex: 1,
     textAlign: 'center',
+    color: '#160b30',
+    fontWeight: '500',
   },
   statusCol: {
     width: 20,
     height: 40,
     marginRight: 4,
+    borderRadius: 4,
   },
   btn: {
     flex: 1,
-    backgroundColor: '#eee',
-    padding: 4,
+    backgroundColor: '#ffd700',
+    padding: 6,
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 4,
+    marginHorizontal: 2,
+  },
+  btnText: {
+    color: '#160b30',
+    fontWeight: 'bold',
   },
 });
