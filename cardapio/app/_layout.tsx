@@ -1,11 +1,10 @@
-﻿import React from 'react';
-import { Stack } from 'expo-router';
-import { PedidoProvider } from '../hooks/usePedido';
+﻿import { Slot } from 'expo-router';
+import { CarrinhoProvider } from '../hooks/useCarrinho';
 
 export default function Layout() {
   return (
-    <PedidoProvider>
-      <Stack screenOptions={{ headerShown: false }} />
-    </PedidoProvider>
+    <CarrinhoProvider>
+      <Slot />
+    </CarrinhoProvider>
   );
 }
