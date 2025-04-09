@@ -12,24 +12,25 @@ import { router } from 'expo-router';
 
 export default function Carrinho() {
   const { carrinho, remover, limpar } = useCarrinho();
-  const [pagamento, setPagamento] = useState<'dinheiro' | 'cartao' | 'pix' | null>(null);
+  const [metodoPagamento, setMetodoPagamento] = useState('');
 
   const total = carrinho.reduce((soma, item) => soma + item.valor, 0);
 
   function finalizarPedido() {
-    if (!pagamento) {
-      Alert.alert('Escolha a forma de pagamento');
+    if (!metodoPagamento) {
+      Alert.alert('Escolha um método de pagamento');
       return;
     }
-    Alert.alert('Pedido finalizado', `Pagamento via ${pagamento.toUpperCase()}`);
+    Alert.alert('Pedido finalizado', `Pagamento: ${metodoPagamento}`);
     limpar();
-    router.push('/cliente/catalogo');
+    const pedidoId = Date.now(); // id fictício para simular redirecionamento
+    router.push(`/cliente/pedido/${pedidoId}`); // redireciona para tela de status do pedido
   }
 
   return (
     <ScrollView style={styles.container}>
-      <TouchableOpacity onPress={() => router.back()} style={styles.voltar}>
-        <Text style={styles.voltarTexto}>←</Text>
+      <TouchableOpacity onPress={() => router.back()}>
+        <Text style={styles.voltar}>{'<'} Voltar</Text>
       </TouchableOpacity>
 
       <Text style={styles.titulo}>Seu Carrinho</Text>
@@ -51,19 +52,17 @@ export default function Carrinho() {
 
       <Text style={styles.total}>Total: R$ {total.toFixed(2)}</Text>
 
-      <View style={styles.pagamentosBox}>
-        <Text style={styles.subtitulo}>Forma de pagamento:</Text>
-        <View style={styles.pagamentosOpcoes}>
-          {['dinheiro', 'cartao', 'pix'].map((tipo) => (
-            <TouchableOpacity
-              key={tipo}
-              style={[styles.botaoPagamento, pagamento === tipo && styles.botaoSelecionado]}
-              onPress={() => setPagamento(tipo as any)}
-            >
-              <Text style={styles.textoPagamento}>{tipo.toUpperCase()}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+      <Text style={styles.label}>Escolha o método de pagamento:</Text>
+      <View style={styles.pagamentos}>
+        {['Dinheiro', 'Cartão', 'Pix'].map((m) => (
+          <TouchableOpacity
+            key={m}
+            style={[styles.metodo, metodoPagamento === m && styles.metodoSelecionado]}
+            onPress={() => setMetodoPagamento(m)}
+          >
+            <Text style={styles.metodoTexto}>{m}</Text>
+          </TouchableOpacity>
+        ))}
       </View>
 
       {carrinho.length > 0 && (
@@ -82,15 +81,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   voltar: {
-    alignSelf: 'flex-start',
+    fontSize: 16,
+    color: '#160b30',
     marginBottom: 10,
-    backgroundColor: '#eee',
-    borderRadius: 4,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-  },
-  voltarTexto: {
-    fontSize: 18,
   },
   titulo: {
     fontSize: 20,
@@ -136,33 +129,31 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     marginTop: 20,
   },
-  pagamentosBox: {
-    marginTop: 30,
-  },
-  subtitulo: {
+  label: {
+    marginTop: 20,
+    marginBottom: 8,
     fontWeight: 'bold',
-    marginBottom: 10,
   },
-  pagamentosOpcoes: {
+  pagamentos: {
     flexDirection: 'row',
     gap: 10,
+    marginBottom: 20,
   },
-  botaoPagamento: {
+  metodo: {
     backgroundColor: '#eee',
     padding: 10,
     borderRadius: 6,
   },
-  botaoSelecionado: {
+  metodoSelecionado: {
     backgroundColor: '#ffcc00',
   },
-  textoPagamento: {
+  metodoTexto: {
     color: '#160b30',
     fontWeight: 'bold',
   },
   botaoFinalizar: {
     backgroundColor: '#160b30',
     padding: 14,
-    marginTop: 30,
     alignItems: 'center',
     borderRadius: 6,
   },
