@@ -5,7 +5,7 @@ export default function Carrinho() {
   return (
     <View style={{ padding: 20 }}>
       <Text>Carrinho</Text>
-      <Button title="Finalizar Pedido" onPress={() => router.push('/pedido/123')} />
+      <Button title="Finalizar Pedido" onPress={() => router.push('/cliente/pedido/123')} />
     </View>
   );
 }

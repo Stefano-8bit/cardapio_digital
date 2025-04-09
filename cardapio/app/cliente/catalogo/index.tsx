@@ -5,8 +5,8 @@ export default function Catalogo() {
   return (
     <View style={{ padding: 20 }}>
       <Text>Catálogo</Text>
-      <Button title="Ir para Carrinho" onPress={() => router.push('/carrinho')} />
-      <Button title="Abrir Filtro" onPress={() => router.push('/anacoras')} />
+      <Button title="Ir para Carrinho" onPress={() => router.push('/cliente/carrinho')} />
+      <Button title="Abrir Filtro" />
     </View>
   );
 }
