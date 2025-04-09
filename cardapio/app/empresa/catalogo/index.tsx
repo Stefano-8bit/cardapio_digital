@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -7,59 +7,176 @@ import {
   StyleSheet,
   TextInput,
   Modal,
+  Alert,
 } from 'react-native';
 import { router } from 'expo-router';
 
+// Tipagem de produto e categoria para evitar erro "never"
+type Produto = {
+  id: number;
+  nome: string;
+};
+
+type Categoria = {
+  id: number;
+  nome: string;
+  produtos: Produto[];
+};
+
 export default function Catalogo() {
   const [modalVisible, setModalVisible] = useState(false);
+  const [categorias, setCategorias] = useState<Categoria[]>([]);
+  const [formulario, setFormulario] = useState({
+    nome: '',
+    descricao: '',
+    valor: '',
+    foto: '',
+    categoriaId: '',
+    tipo: 'categoria',
+  });
+
+  async function carregarCategorias() {
+    try {
+      const resposta = await fetch('http://localhost:3004/categorias');
+      const dados = await resposta.json();
+      setCategorias(dados);
+    } catch (erro) {
+      Alert.alert('Erro', 'Não foi possível carregar as categorias');
+    }
+  }
+
+  async function adicionarItem() {
+    try {
+      if (formulario.tipo === 'categoria') {
+        await fetch('http://localhost:3004/categorias', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nome: formulario.nome }),
+        });
+      } else {
+        await fetch('http://localhost:3004/produtos', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            nome: formulario.nome,
+            descricao: formulario.descricao,
+            valor: parseFloat(formulario.valor),
+            foto: formulario.foto,
+            categoriaId: parseInt(formulario.categoriaId),
+          }),
+        });
+      }
+
+      setModalVisible(false);
+      setFormulario({ nome: '', descricao: '', valor: '', foto: '', categoriaId: '', tipo: 'categoria' });
+      carregarCategorias();
+    } catch (erro) {
+      Alert.alert('Erro', 'Erro ao adicionar item');
+    }
+  }
+
+  useEffect(() => {
+    carregarCategorias();
+  }, []);
 
   return (
     <ScrollView style={styles.container}>
-      <TouchableOpacity onPress={() => router.back()} style={styles.voltar}>
-        <Text style={styles.voltarText}>Voltar Home</Text>
+      <TouchableOpacity onPress={() => router.back()} style={styles.botaoVoltar}>
+        <Text style={styles.textoVoltar}>Voltar Home</Text>
       </TouchableOpacity>
 
-      <View style={styles.actions}>
-        <TouchableOpacity style={styles.actionButton} onPress={() => setModalVisible(true)}>
-          <Text>add categoria</Text>
+      <View style={styles.acoes}>
+        <TouchableOpacity
+          style={styles.botaoAcao}
+          onPress={() => {
+            setFormulario({ ...formulario, tipo: 'categoria' });
+            setModalVisible(true);
+          }}
+        >
+          <Text>Adicionar Categoria</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.actionButton} onPress={() => setModalVisible(true)}>
-          <Text>add produto</Text>
+        <TouchableOpacity
+          style={styles.botaoAcao}
+          onPress={() => {
+            setFormulario({ ...formulario, tipo: 'produto' });
+            setModalVisible(true);
+          }}
+        >
+          <Text>Adicionar Produto</Text>
         </TouchableOpacity>
       </View>
 
-      {/* mock de categorias e produtos */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Categorias</Text>
-        <View style={styles.produtosRow}>
-          <View style={styles.produto}><Text>Produto</Text></View>
-          <View style={styles.produto}><Text>Produto</Text></View>
-          <View style={styles.produto}><Text>Produto</Text></View>
-        </View>
-      </View>
-
-      {/* Modal para adicionar categoria/produto */}
-      <Modal visible={modalVisible} transparent animationType="fade">
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalCard}>
-            <Text style={styles.modalTitle}>Card para adicionar novos produtos ou categorias</Text>
-
-            <View style={styles.modalRow}>
-              <TextInput style={styles.input} placeholder="nome" />
-              <View style={[styles.input, styles.fotoBox]}>
-                <Text>foto</Text>
+      {categorias.map((categoria) => (
+        <View key={categoria.id} style={styles.secao}>
+          <Text style={styles.tituloSecao}>{categoria.nome}</Text>
+          <View style={styles.linhaProdutos}>
+            {categoria.produtos.map((produto) => (
+              <View key={produto.id} style={styles.cardProduto}>
+                <Text>{produto.nome}</Text>
               </View>
+            ))}
+          </View>
+        </View>
+      ))}
+
+      <Modal visible={modalVisible} transparent animationType="fade">
+        <View style={styles.overlayModal}>
+          <View style={styles.modalCard}>
+            {/* Botão X para fechar */}
+            <TouchableOpacity style={styles.botaoFechar} onPress={() => setModalVisible(false)}>
+              <Text style={styles.textoFechar}>X</Text>
+            </TouchableOpacity>
+
+            <Text style={styles.tituloModal}>
+              {formulario.tipo === 'categoria' ? 'Nova Categoria' : 'Novo Produto'}
+            </Text>
+
+            <View style={styles.linhaModal}>
+              <TextInput
+                style={styles.input}
+                placeholder="Nome"
+                value={formulario.nome}
+                onChangeText={(texto) => setFormulario({ ...formulario, nome: texto })}
+              />
+              {formulario.tipo === 'produto' && (
+                <TextInput
+                  style={[styles.input, styles.caixaFoto]}
+                  placeholder="URL da foto"
+                  value={formulario.foto}
+                  onChangeText={(texto) => setFormulario({ ...formulario, foto: texto })}
+                />
+              )}
             </View>
 
-            <TextInput style={styles.input} placeholder="descrição" />
+            {formulario.tipo === 'produto' && (
+              <>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Descrição"
+                  value={formulario.descricao}
+                  onChangeText={(texto) => setFormulario({ ...formulario, descricao: texto })}
+                />
+                <View style={styles.linhaModal}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="ID da Categoria"
+                    keyboardType="numeric"
+                    value={formulario.categoriaId}
+                    onChangeText={(texto) => setFormulario({ ...formulario, categoriaId: texto })}
+                  />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Valor"
+                    keyboardType="decimal-pad"
+                    value={formulario.valor}
+                    onChangeText={(texto) => setFormulario({ ...formulario, valor: texto })}
+                  />
+                </View>
+              </>
+            )}
 
-            <View style={styles.modalRow}>
-              <TextInput style={styles.inputHalf} placeholder="categoria" />
-              <TextInput style={styles.inputHalf} placeholder="valor" />
-            </View>
-
-            <TouchableOpacity style={styles.addButton} onPress={() => setModalVisible(false)}>
-              <Text>add</Text>
+            <TouchableOpacity style={styles.botaoAdicionar} onPress={adicionarItem}>
+              <Text>Adicionar</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -70,23 +187,21 @@ export default function Catalogo() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
-  voltar: { padding: 10, backgroundColor: '#ddd', alignSelf: 'flex-start', margin: 10 },
-  voltarText: { color: '#000' },
-  actions: { flexDirection: 'row', gap: 10, paddingHorizontal: 10, marginBottom: 10 },
-  actionButton: { backgroundColor: '#ccc', padding: 10 },
-  section: { marginBottom: 20, paddingHorizontal: 10 },
-  sectionTitle: { backgroundColor: '#ddd', padding: 5, marginBottom: 10 },
-  produtosRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
-  produto: {
+  botaoVoltar: { padding: 10, backgroundColor: '#ddd', alignSelf: 'flex-start', margin: 10 },
+  textoVoltar: { color: '#000' },
+  acoes: { flexDirection: 'row', gap: 10, paddingHorizontal: 10, marginBottom: 10 },
+  botaoAcao: { backgroundColor: '#ccc', padding: 10 },
+  secao: { marginBottom: 20, paddingHorizontal: 10 },
+  tituloSecao: { backgroundColor: '#ddd', padding: 5, marginBottom: 10 },
+  linhaProdutos: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
+  cardProduto: {
     backgroundColor: '#ddd',
     width: 100,
     height: 100,
     justifyContent: 'center',
     alignItems: 'center',
   },
-
-  // modal
-  modalOverlay: {
+  overlayModal: {
     flex: 1,
     backgroundColor: '#000000aa',
     justifyContent: 'center',
@@ -99,12 +214,13 @@ const styles = StyleSheet.create({
     width: '80%',
     padding: 20,
     gap: 12,
+    position: 'relative',
   },
-  modalTitle: {
+  tituloModal: {
     textAlign: 'center',
     fontWeight: 'bold',
   },
-  modalRow: {
+  linhaModal: {
     flexDirection: 'row',
     gap: 10,
     justifyContent: 'space-between',
@@ -114,18 +230,29 @@ const styles = StyleSheet.create({
     padding: 10,
     flex: 1,
   },
-  inputHalf: {
-    backgroundColor: '#eee',
-    padding: 10,
-    flex: 1,
-  },
-  fotoBox: {
+  caixaFoto: {
     justifyContent: 'center',
     alignItems: 'center',
   },
-  addButton: {
+  botaoAdicionar: {
     backgroundColor: '#ccc',
     padding: 12,
     alignItems: 'center',
+  },
+  botaoFechar: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    zIndex: 1,
+    backgroundColor: '#eee',
+    borderRadius: 20,
+    width: 28,
+    height: 28,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  textoFechar: {
+    fontWeight: 'bold',
+    fontSize: 16,
   },
 });
