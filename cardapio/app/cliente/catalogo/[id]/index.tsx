@@ -8,8 +8,8 @@ import {
   Image,
   Alert,
 } from 'react-native';
-import { router } from 'expo-router';
-import { useCarrinho } from '../../../hooks/useCarrinho';
+import { useLocalSearchParams, router } from 'expo-router';
+import { useCarrinho } from '../../../../hooks/useCarrinho';
 
 interface Produto {
   id: number;
@@ -25,13 +25,14 @@ interface Categoria {
   produtos: Produto[];
 }
 
-export default function CatalogoCliente() {
+export default function CatalogoPorEmpresa() {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const { carrinho, adicionar } = useCarrinho();
+  const { id } = useLocalSearchParams();
 
   async function carregarCategorias() {
     try {
-      const res = await fetch('http://localhost:3004/categorias');
+      const res = await fetch(`http://localhost:3004/categorias?empresaId=${id}`);
       const data = await res.json();
       setCategorias(data);
     } catch (error) {
@@ -45,8 +46,8 @@ export default function CatalogoCliente() {
   }
 
   useEffect(() => {
-    carregarCategorias();
-  }, []);
+    if (id) carregarCategorias();
+  }, [id]);
 
   return (
     <ScrollView style={styles.container}>
@@ -68,7 +69,9 @@ export default function CatalogoCliente() {
               <View style={styles.infoProduto}>
                 <Text style={styles.nomeProduto}>{produto.nome}</Text>
                 <Text style={styles.valorProduto}>R$ {produto.valor.toFixed(2)}</Text>
-                {produto.descricao && <Text style={styles.descProduto}>{produto.descricao}</Text>}
+                {produto.descricao && (
+                  <Text style={styles.descProduto}>{produto.descricao}</Text>
+                )}
                 <TouchableOpacity
                   style={styles.botaoAdicionar}
                   onPress={() => adicionarAoCarrinho(produto)}
