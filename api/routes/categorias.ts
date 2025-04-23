@@ -18,16 +18,19 @@ router.get("/", async (req, res) => {
 
 // Criar categoria
 router.post("/", async (req, res) => {
-  const { nome } = req.body
+  const { nome, empresaId } = req.body
 
-  if (!nome) {
-    res.status(400).json({ erro: "Informe o nome da categoria" })
+  if (!nome || !empresaId) {
+    res.status(400).json({ erro: "Informe o nome e o ID da empresa" })
     return
   }
 
   try {
     const categoria = await prisma.categoria.create({
-      data: { nome }
+      data: {
+        nome,
+        empresaId: Number(empresaId)
+      }
     })
     res.status(201).json(categoria)
   } catch (error) {
