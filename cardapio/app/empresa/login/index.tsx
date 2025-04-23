@@ -5,15 +5,15 @@ import { useAuth } from '../../../hooks/useAuth'; // usa o hook novo
 
 export default function Login() {
   const { login } = useAuth(); // função login do contexto
-  const [cpf, setCpf] = useState('');
+  const [nome, setNome] = useState('');
   const [senha, setSenha] = useState('');
 
   async function handleLogin() {
     try {
-      const response = await fetch('http://localhost:3004/usuarios/login', {
+      const response = await fetch('http://localhost:3004/empresas/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cpf, senha }),
+        body: JSON.stringify({ nome, senha }),
       });
 
       const data = await response.json();
@@ -24,7 +24,7 @@ export default function Login() {
       }
 
       // salva no contexto de autenticação
-      login(data.usuario || data); // ajusta aqui se tua API manda diferente
+      login(data);
       router.push('/empresa/home');
     } catch (err) {
       Alert.alert('Erro', 'Não foi possível conectar com o servidor');
@@ -39,12 +39,12 @@ export default function Login() {
         resizeMode="cover"
       />
       <View style={styles.form}>
-        <Text style={styles.label}>CPF:</Text>
+        <Text style={styles.label}>Nome da empresa:</Text>
         <TextInput
-          placeholder="Digite seu CPF"
+          placeholder="Digite o nome da empresa"
           placeholderTextColor="#999"
           style={styles.input}
-          onChangeText={setCpf}
+          onChangeText={setNome}
         />
         <Text style={styles.label}>Senha:</Text>
         <TextInput
