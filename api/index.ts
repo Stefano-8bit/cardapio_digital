@@ -6,7 +6,6 @@ import usuariosRoutes from './routes/usuarios'
 import produtosRoutes from './routes/produtos'
 import categoriasRoutes from './routes/categorias'
 import pedidosRoutes from './routes/pedidos'
-import empresasRoutes from './routes/empresa' // <- adiciona isso
 
 const app = express()
 const port = 3004
@@ -18,7 +17,6 @@ app.use("/usuarios", usuariosRoutes)
 app.use("/produtos", produtosRoutes)
 app.use("/categorias", categoriasRoutes)
 app.use("/pedidos", pedidosRoutes)
-app.use("/empresa", empresasRoutes) // <- e isso
 
 app.get('/', (req, res) => {
   res.send('API: Cardápio Digital')

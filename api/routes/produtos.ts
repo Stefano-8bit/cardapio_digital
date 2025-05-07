@@ -47,20 +47,13 @@ router.post("/", async (req, res) => {
 
   try {
     const produto = await prisma.produto.create({
-      data: {
-        nome,
-        descricao,
-        valor: Number(valor),
-        foto,
-        categoriaId: Number(categoriaId)
-      }
+      data: { nome, descricao, valor, foto, categoriaId }
     })
     res.status(201).json(produto)
   } catch (error) {
     res.status(400).json(error)
   }
 })
-
 
 // Atualizar produto
 router.put("/:id", async (req, res) => {
