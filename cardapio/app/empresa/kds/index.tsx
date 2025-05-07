@@ -1,13 +1,8 @@
 import { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-} from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { router } from 'expo-router';
-import AuthGuard from '../../../components/AuthGuard'; // certifique-se que o caminho está correto
+import AuthGuard from '../../../components/AuthGuard';
+import { styles } from './kds.styles';
 
 export default function KDS() {
   const [pedidos, setPedidos] = useState([
@@ -54,9 +49,7 @@ export default function KDS() {
 
   const atualizarStatus = (id: number, novoStatus: string) => {
     setPedidos((prev) =>
-      prev.map((p) =>
-        p.id === id ? { ...p, status: novoStatus } : p
-      )
+      prev.map((p) => (p.id === id ? { ...p, status: novoStatus } : p))
     );
   };
 
@@ -77,9 +70,7 @@ export default function KDS() {
     const s = Math.floor((Date.now() - ms) / 1000);
     const min = Math.floor(s / 60);
     const sec = s % 60;
-    return `${min.toString().padStart(2, '0')}:${sec
-      .toString()
-      .padStart(2, '0')}`;
+    return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
   };
 
   return (
@@ -95,7 +86,7 @@ export default function KDS() {
         </View>
 
         <View style={styles.header}>
-          <View style={styles.statusCol}></View>
+          <View style={[styles.statusCol]} />
           <Text style={styles.col}>Id</Text>
           <Text style={styles.col}>Cliente</Text>
           <Text style={styles.col}>Produto</Text>
@@ -107,32 +98,21 @@ export default function KDS() {
 
         {pedidos.map((p) => (
           <View key={p.id} style={styles.row}>
-            <View
-              style={[styles.statusCol, { backgroundColor: corStatus(p.status) }]}
-            />
+            <View style={[styles.statusCol, { backgroundColor: corStatus(p.status) }]} />
             <Text style={styles.col}>{p.id}</Text>
             <Text style={styles.col}>{p.cliente}</Text>
             <Text style={styles.col}>{p.produto}</Text>
             <Text style={styles.col}>{p.valor}</Text>
 
-            <TouchableOpacity
-              style={styles.btn}
-              onPress={() => atualizarStatus(p.id, 'cancelado')}
-            >
+            <TouchableOpacity style={styles.btn} onPress={() => atualizarStatus(p.id, 'cancelado')}>
               <Text style={styles.btnText}>X</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.btn}
-              onPress={() => atualizarStatus(p.id, 'confirmado')}
-            >
+            <TouchableOpacity style={styles.btn} onPress={() => atualizarStatus(p.id, 'confirmado')}>
               <Text style={styles.btnText}>✔</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.btn}
-              onPress={() => atualizarStatus(p.id, 'pronto')}
-            >
+            <TouchableOpacity style={styles.btn} onPress={() => atualizarStatus(p.id, 'pronto')}>
               <Text style={styles.btnText}>{segundosParaTempo(p.criadoEm)}</Text>
             </TouchableOpacity>
           </View>
@@ -141,73 +121,3 @@ export default function KDS() {
     </AuthGuard>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  voltar: {
-    padding: 10,
-    backgroundColor: '#ffd700',
-    alignSelf: 'flex-start',
-    margin: 10,
-    borderRadius: 6,
-  },
-  voltarText: {
-    color: '#160b30',
-    fontWeight: 'bold',
-  },
-  headerBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    padding: 10,
-    backgroundColor: '#fdf5d4',
-  },
-  headerBarText: {
-    color: '#160b30',
-    fontWeight: 'bold',
-  },
-  statusBlock: {
-    width: 20,
-    height: 20,
-    borderRadius: 4,
-  },
-  header: {
-    flexDirection: 'row',
-    padding: 5,
-    backgroundColor: '#160b30',
-    alignItems: 'center',
-  },
-  row: {
-    flexDirection: 'row',
-    padding: 10,
-    backgroundColor: '#f2f2f2',
-    borderBottomWidth: 1,
-    borderColor: '#ccc',
-    alignItems: 'center',
-  },
-  col: {
-    flex: 1,
-    textAlign: 'center',
-    color: '#160b30',
-    fontWeight: '500',
-  },
-  statusCol: {
-    width: 20,
-    height: 40,
-    marginRight: 4,
-    borderRadius: 4,
-  },
-  btn: {
-    flex: 1,
-    backgroundColor: '#ffd700',
-    padding: 6,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 4,
-    marginHorizontal: 2,
-  },
-  btnText: {
-    color: '#160b30',
-    fontWeight: 'bold',
-  },
-});

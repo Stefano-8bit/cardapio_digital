@@ -1,10 +1,11 @@
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import { useState } from 'react';
 import { router } from 'expo-router';
-import { useAuth } from '../../../hooks/useAuth'; // usa o hook novo
+import { useAuth } from '../../../hooks/useAuth';
+import { styles } from './login.styles';
 
 export default function Login() {
-  const { login } = useAuth(); // função login do contexto
+  const { login } = useAuth();
   const [cpf, setCpf] = useState('');
   const [senha, setSenha] = useState('');
 
@@ -23,8 +24,7 @@ export default function Login() {
         return;
       }
 
-      // salva no contexto de autenticação
-      login(data.usuario || data); // ajusta aqui se tua API manda diferente
+      login(data.usuario || data);
       router.push('/empresa/home');
     } catch (err) {
       Alert.alert('Erro', 'Não foi possível conectar com o servidor');
@@ -61,36 +61,3 @@ export default function Login() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  banner: { width: '100%', height: 250, backgroundColor: '#eee' },
-  form: { padding: 20 },
-  label: {
-    marginBottom: 4,
-    fontSize: 14,
-    color: '#160b30',
-    fontWeight: '600',
-  },
-  input: {
-    backgroundColor: '#f0f0f0',
-    padding: 10,
-    borderRadius: 8,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: '#160b30',
-    color: '#160b30',
-  },
-  button: {
-    backgroundColor: '#ffd700',
-    padding: 12,
-    alignItems: 'center',
-    borderRadius: 8,
-    marginTop: 10,
-  },
-  buttonText: {
-    color: '#160b30',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-});
