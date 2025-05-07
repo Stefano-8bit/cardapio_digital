@@ -3,21 +3,28 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Usuario = { id: number; nome: string; cpf: string };
+
 type AuthContextType = {
   usuario: Usuario | null;
   login: (usuario: Usuario) => void;
   logout: () => void;
+  loading: boolean;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [usuario, setUsuario] = useState<Usuario | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    AsyncStorage.getItem('usuario').then((data) => {
+    const carregarUsuario = async () => {
+      const data = await AsyncStorage.getItem('usuario');
       if (data) setUsuario(JSON.parse(data));
-    });
+      setLoading(false);
+    };
+
+    carregarUsuario();
   }, []);
 
   const login = async (usuario: Usuario) => {
@@ -31,7 +38,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ usuario, login, logout }}>
+    <AuthContext.Provider value={{ usuario, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

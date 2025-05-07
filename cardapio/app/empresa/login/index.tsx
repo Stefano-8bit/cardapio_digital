@@ -1,10 +1,12 @@
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Alert, Dimensions } from 'react-native';
 import { useState } from 'react';
 import { router } from 'expo-router';
-import { useAuth } from '../../../hooks/useAuth'; // usa o hook novo
+import { useAuth } from '../../../hooks/useAuth';
+
+const { height } = Dimensions.get('window');
 
 export default function Login() {
-  const { login } = useAuth(); // função login do contexto
+  const { login } = useAuth();
   const [nome, setNome] = useState('');
   const [senha, setSenha] = useState('');
 
@@ -23,7 +25,6 @@ export default function Login() {
         return;
       }
 
-      // salva no contexto de autenticação
       login(data);
       router.push('/empresa/home');
     } catch (err) {
@@ -36,7 +37,7 @@ export default function Login() {
       <Image
         source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPgDcx-I2OLjGtFKlaAY1B89BZASmqHcZQ2w&s' }}
         style={styles.banner}
-        resizeMode="cover"
+        resizeMode="contain"
       />
       <View style={styles.form}>
         <Text style={styles.label}>Nome da empresa:</Text>
@@ -63,9 +64,20 @@ export default function Login() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  banner: { width: '100%', height: 250, backgroundColor: '#eee' },
-  form: { padding: 20 },
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  banner: {
+    height: height * 0.5, // metade da tela
+    width: '100%',
+    backgroundColor: '#eee',
+  },
+  form: {
+    flex: 1,
+    padding: 20,
+    justifyContent: 'center',
+  },
   label: {
     marginBottom: 4,
     fontSize: 14,
