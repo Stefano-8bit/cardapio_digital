@@ -8,31 +8,29 @@ datasource db {
 }
 
 model Empresa {
-  id         Int         @id @default(autoincrement())
-  nome       String      @db.VarChar(100)
-  senha     String   @db.VarChar(60)
-  createdAt  DateTime    @default(now())
-  categorias Categoria[]
+  id         Int        @id @default(autoincrement())
+  nome       String     @db.VarChar(100)
+  senha      String     @db.VarChar(60)
+  createdAt  DateTime   @default(now())
+  // categorias removido
 }
 
 model Categoria {
-  id         Int       @id @default(autoincrement())
-  nome       String    @db.VarChar(60)
-  empresaId  Int
-  empresa    Empresa   @relation(fields: [empresaId], references: [id])
-  createdAt  DateTime  @default(now())
+  id         Int        @id @default(autoincrement())
+  nome       String     @db.VarChar(60)
+  createdAt  DateTime   @default(now())
   produtos   Produto[]
 }
 
 model Produto {
-  id          Int       @id @default(autoincrement())
-  nome        String    @db.VarChar(100)
-  descricao   String?   @db.Text
+  id          Int        @id @default(autoincrement())
+  nome        String     @db.VarChar(100)
+  descricao   String?    @db.Text
   valor       Float
-  foto        String?   @db.VarChar(255)
+  foto        String?    @db.VarChar(255)
   categoriaId Int
-  categoria   Categoria @relation(fields: [categoriaId], references: [id])
-  createdAt   DateTime  @default(now())
+  categoria   Categoria  @relation(fields: [categoriaId], references: [id])
+  createdAt   DateTime   @default(now())
   pedidos     Pedido[]
 }
 
