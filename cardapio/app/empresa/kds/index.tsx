@@ -7,8 +7,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { router } from 'expo-router';
-
-// status: 'pendente' | 'confirmado' | 'cancelado' | 'pronto'
+import AuthGuard from '../../../components/AuthGuard'; // certifique-se que o caminho está correto
 
 export default function KDS() {
   const [pedidos, setPedidos] = useState([
@@ -84,60 +83,62 @@ export default function KDS() {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <TouchableOpacity onPress={() => router.back()} style={styles.voltar}>
-        <Text style={styles.voltarText}>Voltar Home</Text>
-      </TouchableOpacity>
+    <AuthGuard>
+      <ScrollView style={styles.container}>
+        <TouchableOpacity onPress={() => router.push('/empresa/home')} style={styles.voltar}>
+          <Text style={styles.voltarText}>Voltar Home</Text>
+        </TouchableOpacity>
 
-      <View style={styles.headerBar}>
-        <View style={[styles.statusBlock, { backgroundColor: '#ffd700' }]} />
-        <Text style={styles.headerBarText}>Produtos Prontos</Text>
-      </View>
-
-      <View style={styles.header}>
-        <View style={styles.statusCol}></View>
-        <Text style={styles.col}>Id</Text>
-        <Text style={styles.col}>Cliente</Text>
-        <Text style={styles.col}>Produto</Text>
-        <Text style={styles.col}>Valor</Text>
-        <Text style={styles.col}>Cancelar</Text>
-        <Text style={styles.col}>Confirmar</Text>
-        <Text style={styles.col}>✓</Text>
-      </View>
-
-      {pedidos.map((p) => (
-        <View key={p.id} style={styles.row}>
-          <View
-            style={[styles.statusCol, { backgroundColor: corStatus(p.status) }]}
-          />
-          <Text style={styles.col}>{p.id}</Text>
-          <Text style={styles.col}>{p.cliente}</Text>
-          <Text style={styles.col}>{p.produto}</Text>
-          <Text style={styles.col}>{p.valor}</Text>
-
-          <TouchableOpacity
-            style={styles.btn}
-            onPress={() => atualizarStatus(p.id, 'cancelado')}
-          >
-            <Text style={styles.btnText}>X</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.btn}
-            onPress={() => atualizarStatus(p.id, 'confirmado')}
-          >
-            <Text style={styles.btnText}>✔</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.btn}
-            onPress={() => atualizarStatus(p.id, 'pronto')}
-          >
-            <Text style={styles.btnText}>{segundosParaTempo(p.criadoEm)}</Text>
-          </TouchableOpacity>
+        <View style={styles.headerBar}>
+          <View style={[styles.statusBlock, { backgroundColor: '#ffd700' }]} />
+          <Text style={styles.headerBarText}>Produtos Prontos</Text>
         </View>
-      ))}
-    </ScrollView>
+
+        <View style={styles.header}>
+          <View style={styles.statusCol}></View>
+          <Text style={styles.col}>Id</Text>
+          <Text style={styles.col}>Cliente</Text>
+          <Text style={styles.col}>Produto</Text>
+          <Text style={styles.col}>Valor</Text>
+          <Text style={styles.col}>Cancelar</Text>
+          <Text style={styles.col}>Confirmar</Text>
+          <Text style={styles.col}>✓</Text>
+        </View>
+
+        {pedidos.map((p) => (
+          <View key={p.id} style={styles.row}>
+            <View
+              style={[styles.statusCol, { backgroundColor: corStatus(p.status) }]}
+            />
+            <Text style={styles.col}>{p.id}</Text>
+            <Text style={styles.col}>{p.cliente}</Text>
+            <Text style={styles.col}>{p.produto}</Text>
+            <Text style={styles.col}>{p.valor}</Text>
+
+            <TouchableOpacity
+              style={styles.btn}
+              onPress={() => atualizarStatus(p.id, 'cancelado')}
+            >
+              <Text style={styles.btnText}>X</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.btn}
+              onPress={() => atualizarStatus(p.id, 'confirmado')}
+            >
+              <Text style={styles.btnText}>✔</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.btn}
+              onPress={() => atualizarStatus(p.id, 'pronto')}
+            >
+              <Text style={styles.btnText}>{segundosParaTempo(p.criadoEm)}</Text>
+            </TouchableOpacity>
+          </View>
+        ))}
+      </ScrollView>
+    </AuthGuard>
   );
 }
 

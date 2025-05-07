@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
+import ProtectedRoute from '../../../../components/ProtectedRoute';
 
-export default function Pedido() {
+function PedidoContent() {
   const [status, setStatus] = useState<'pendente' | 'pronto'>('pendente');
   const { id } = useLocalSearchParams();
 
-  // Simulação futura de status vindo do KDS (atualmente fixo como "pendente")
   useEffect(() => {
     const interval = setInterval(() => {
-      // Aqui será onde o sistema verificará o status real do pedido
+      // Simulação futura: atualizar status do pedido aqui
       // setStatus('pronto');
     }, 10);
     return () => clearInterval(interval);
@@ -20,13 +20,23 @@ export default function Pedido() {
       <View style={styles.box}>
         <Text style={styles.texto}>Informações do pedido</Text>
         <Text style={styles.texto}>Horário do pedido: {new Date().toLocaleTimeString()}</Text>
-        <Text style={styles.texto}>Status: {status === 'pronto' ? 'Pronto para retirada' : 'Aguardando preparo...'}</Text>
+        <Text style={styles.texto}>
+          Status: {status === 'pronto' ? 'Pronto para retirada' : 'Aguardando preparo...'}
+        </Text>
       </View>
 
       <View style={styles.botaoBox}>
         <Text style={styles.botaoTexto}>Aguardando confirmação do bar...</Text>
       </View>
     </View>
+  );
+}
+
+export default function Pedido() {
+  return (
+    <ProtectedRoute>
+      <PedidoContent />
+    </ProtectedRoute>
   );
 }
 

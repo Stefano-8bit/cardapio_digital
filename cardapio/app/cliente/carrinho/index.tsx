@@ -9,8 +9,9 @@ import {
 } from 'react-native';
 import { useCarrinho } from '../../../hooks/useCarrinho';
 import { router } from 'expo-router';
+import ProtectedRoute from '../../../components/ProtectedRoute';
 
-export default function Carrinho() {
+function CarrinhoContent() {
   const { carrinho, remover, limpar, atualizarQuantidade } = useCarrinho();
   const [metodoPagamento, setMetodoPagamento] = useState('');
 
@@ -82,6 +83,14 @@ export default function Carrinho() {
         </TouchableOpacity>
       )}
     </ScrollView>
+  );
+}
+
+export default function Carrinho() {
+  return (
+    <ProtectedRoute>
+      <CarrinhoContent />
+    </ProtectedRoute>
   );
 }
 

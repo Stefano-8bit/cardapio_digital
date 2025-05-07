@@ -16,7 +16,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     AsyncStorage.getItem('usuario').then((data) => {
-      if (data) setUsuario(JSON.parse(data));
+      if (data) {
+        try {
+          const parsed = JSON.parse(data);
+          setUsuario(parsed);
+        } catch (error) {
+          console.warn('Erro ao fazer parse do usuário:', error);
+          AsyncStorage.removeItem('usuario');
+        }
+      }
     });
   }, []);
 
