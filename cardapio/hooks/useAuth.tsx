@@ -1,44 +1,51 @@
-// hooks/useAuth.tsx
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
-type Usuario = { id: number; nome: string; cpf: string };
+type Empresa = {
+  id: number
+  nome: string
+}
+
 type AuthContextType = {
-  usuario: Usuario | null;
-  login: (usuario: Usuario) => void;
-  logout: () => void;
-};
+  empresa: Empresa | null
+  login: (empresa: Empresa) => void
+  logout: () => void
+}
 
-const AuthContext = createContext<AuthContextType | null>(null);
+const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [usuario, setUsuario] = useState<Usuario | null>(null);
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [empresa, setEmpresa] = useState<Empresa | null>(null)
 
   useEffect(() => {
-    AsyncStorage.getItem('usuario').then((data) => {
-      if (data) setUsuario(JSON.parse(data));
-    });
-  }, []);
+    async function carregarEmpresaSalva() {
+      const dados = await AsyncStorage.getItem('empresa')
+      if (dados) {
+        setEmpresa(JSON.parse(dados))
+      }
+    }
+    carregarEmpresaSalva()
+  }, [])
 
-  const login = async (usuario: Usuario) => {
-    setUsuario(usuario);
-    await AsyncStorage.setItem('usuario', JSON.stringify(usuario));
-  };
+  async function login(empresa: Empresa) {
+    setEmpresa(empresa)
+    await AsyncStorage.setItem('empresa', JSON.stringify(empresa))
+  }
 
-  const logout = async () => {
-    setUsuario(null);
-    await AsyncStorage.removeItem('usuario');
-  };
+  async function logout() {
+    setEmpresa(null)
+    await AsyncStorage.removeItem('empresa')
+  }
 
   return (
-    <AuthContext.Provider value={{ usuario, login, logout }}>
+    <AuthContext.Provider value={{ empresa, login, logout }}>
       {children}
     </AuthContext.Provider>
-  );
+  )
 }
 
 export function useAuth() {
-  const context = useContext(AuthContext);
-  if (!context) throw new Error('useAuth precisa estar dentro de AuthProvider');
-  return context;
+  const context = useContext(AuthContext)
+  if (!context) throw new Error('useAuth deve ser usado dentro de AuthProvider')
+  return context
 }

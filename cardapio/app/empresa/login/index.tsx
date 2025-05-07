@@ -1,50 +1,45 @@
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Alert } from 'react-native';
-import { useState } from 'react';
-import { router } from 'expo-router';
-import { useAuth } from '../../../hooks/useAuth'; // usa o hook novo
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native'
+import { useState } from 'react'
+import { router } from 'expo-router'
+import { useAuth } from '../../../hooks/useAuth'
 
-export default function Login() {
-  const { login } = useAuth(); // função login do contexto
-  const [cpf, setCpf] = useState('');
-  const [senha, setSenha] = useState('');
+export default function LoginEmpresa() {
+  const { login } = useAuth()
+  const [nome, setNome] = useState('')
+  const [senha, setSenha] = useState('')
 
   async function handleLogin() {
     try {
-      const response = await fetch('http://localhost:3004/usuarios/login', {
+      const response = await fetch('http://localhost:3004/empresa/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cpf, senha }),
-      });
+        body: JSON.stringify({ nome, senha }),
+      })
 
-      const data = await response.json();
+      const data = await response.json()
+      console.log('Login response:', data) // ✅ debug
 
-      if (!response.ok) {
-        Alert.alert('Erro', data.erro || 'Falha no login');
-        return;
+      if (!response.ok || !data.empresa) {
+        Alert.alert('Erro', data.erro || 'Falha no login')
+        return
       }
 
-      // salva no contexto de autenticação
-      login(data.usuario || data); // ajusta aqui se tua API manda diferente
-      router.push('/empresa/home');
+      login(data.empresa) // ✅ empresa.id e empresa.nome
+      router.push('/empresa/home')
     } catch (err) {
-      Alert.alert('Erro', 'Não foi possível conectar com o servidor');
+      Alert.alert('Erro', 'Erro ao conectar no servidor')
     }
   }
 
   return (
     <View style={styles.container}>
-      <Image
-        source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPgDcx-I2OLjGtFKlaAY1B89BZASmqHcZQ2w&s' }}
-        style={styles.banner}
-        resizeMode="cover"
-      />
       <View style={styles.form}>
-        <Text style={styles.label}>CPF:</Text>
+        <Text style={styles.label}>Nome da Empresa:</Text>
         <TextInput
-          placeholder="Digite seu CPF"
+          placeholder="Digite o nome"
           placeholderTextColor="#999"
           style={styles.input}
-          onChangeText={setCpf}
+          onChangeText={setNome}
         />
         <Text style={styles.label}>Senha:</Text>
         <TextInput
@@ -55,16 +50,15 @@ export default function Login() {
           onChangeText={setSenha}
         />
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Continuar</Text>
+          <Text style={styles.buttonText}>Entrar</Text>
         </TouchableOpacity>
       </View>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  banner: { width: '100%', height: 250, backgroundColor: '#eee' },
+  container: { flex: 1, justifyContent: 'center', backgroundColor: '#fff' },
   form: { padding: 20 },
   label: {
     marginBottom: 4,
@@ -93,4 +87,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
-});
+})

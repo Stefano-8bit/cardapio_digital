@@ -1,26 +1,27 @@
-import { useAuth } from '../hooks/useAuth';
-import { router } from 'expo-router';
-import { useEffect } from 'react';
-import { View, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native'
+import { useAuth } from '../hooks/useAuth'
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
-  const { usuario } = useAuth();
+  const { empresa } = useAuth()
 
-  useEffect(() => {
+  console.log('AuthGuard empresa:', empresa) // ✅ debug
 
-    
-    if (!usuario) {
-      router.replace('/empresa/login');
-    }
-  }, [usuario]);
-
-  if (!usuario) {
+  if (!empresa) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" />
+      <View style={styles.container}>
+        <Text style={styles.text}>Você precisa estar logado para acessar essa área.</Text>
       </View>
-    );
+    )
   }
 
-  return <>{children}</>;
+  return <>{children}</>
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff'
+  },
+  text: {
+    color: '#160b30', fontWeight: 'bold'
+  }
+})

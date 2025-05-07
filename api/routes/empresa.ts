@@ -102,4 +102,35 @@ router.get("/:id", async (req, res) => {
   }
 })
 
+// GET /empresa/:id/catalogo
+router.get("/:id/catalogo", async (req, res) => {
+  const { id } = req.params
+
+  try {
+    const empresa = await prisma.empresa.findUnique({
+      where: { id: Number(id) },
+      include: {
+        categorias: {
+          include: {
+            produtos: true
+          }
+        }
+      }
+    })
+
+    if (!empresa) {
+      return res.status(404).json({ erro: "Empresa não encontrada" })
+    }
+
+    res.status(200).json({
+      id: empresa.id,
+      nome: empresa.nome,
+      categorias: empresa.categorias
+    })
+  } catch (error) {
+    res.status(400).json(error)
+  }
+})
+
+
 export default router

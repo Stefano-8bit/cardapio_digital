@@ -1,47 +1,30 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  Modal,
-  Alert,
-} from 'react-native';
-import { router } from 'expo-router';
-import AuthGuard from '../../../components/AuthGuard'; // 👈 Importa o guard
+  View, Text, TextInput, TouchableOpacity, ScrollView,
+  StyleSheet, Modal, Alert
+} from 'react-native'
+import { router } from 'expo-router'
+import { useAuth } from '../../../hooks/useAuth'
+import AuthGuard from '../../../components/AuthGuard'
 
-type Produto = {
-  id: number;
-  nome: string;
-};
-
-type Categoria = {
-  id: number;
-  nome: string;
-  produtos: Produto[];
-};
+type Produto = { id: number, nome: string }
+type Categoria = { id: number, nome: string, produtos: Produto[] }
 
 function CatalogoInterno() {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [categorias, setCategorias] = useState<Categoria[]>([]);
+  const { empresa } = useAuth()
+  const [modalVisible, setModalVisible] = useState(false)
+  const [categorias, setCategorias] = useState<Categoria[]>([])
   const [formulario, setFormulario] = useState({
-    nome: '',
-    descricao: '',
-    valor: '',
-    foto: '',
-    categoriaId: '',
-    tipo: 'categoria',
-  });
+    nome: '', descricao: '', valor: '', foto: '', categoriaId: '', tipo: 'categoria'
+  })
 
   async function carregarCategorias() {
     try {
-      const resposta = await fetch('http://localhost:3004/categorias');
-      const dados = await resposta.json();
-      setCategorias(dados);
-    } catch (erro) {
-      Alert.alert('Erro', 'Não foi possível carregar as categorias');
+      const resposta = await fetch(`http://localhost:3004/empresa/${empresa?.id}/catalogo`)
+      const data = await resposta.json()
+      setCategorias(data.categorias)
+    } catch {
+      Alert.alert('Erro', 'Não foi possível carregar as categorias')
     }
   }
 
@@ -51,8 +34,8 @@ function CatalogoInterno() {
         await fetch('http://localhost:3004/categorias', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ nome: formulario.nome }),
-        });
+          body: JSON.stringify({ nome: formulario.nome, empresaId: empresa?.id }),
+        })
       } else {
         await fetch('http://localhost:3004/produtos', {
           method: 'POST',
@@ -64,20 +47,20 @@ function CatalogoInterno() {
             foto: formulario.foto,
             categoriaId: parseInt(formulario.categoriaId),
           }),
-        });
+        })
       }
 
-      setModalVisible(false);
-      setFormulario({ nome: '', descricao: '', valor: '', foto: '', categoriaId: '', tipo: 'categoria' });
-      carregarCategorias();
-    } catch (erro) {
-      Alert.alert('Erro', 'Erro ao adicionar item');
+      setModalVisible(false)
+      setFormulario({ nome: '', descricao: '', valor: '', foto: '', categoriaId: '', tipo: 'categoria' })
+      carregarCategorias()
+    } catch {
+      Alert.alert('Erro', 'Erro ao adicionar item')
     }
   }
 
   useEffect(() => {
-    carregarCategorias();
-  }, []);
+    carregarCategorias()
+  }, [])
 
   return (
     <ScrollView style={styles.container}>
@@ -89,8 +72,8 @@ function CatalogoInterno() {
         <TouchableOpacity
           style={styles.botaoAcao}
           onPress={() => {
-            setFormulario({ ...formulario, tipo: 'categoria' });
-            setModalVisible(true);
+            setFormulario({ ...formulario, tipo: 'categoria' })
+            setModalVisible(true)
           }}
         >
           <Text style={styles.textoBotaoAcao}>Adicionar Categoria</Text>
@@ -98,8 +81,8 @@ function CatalogoInterno() {
         <TouchableOpacity
           style={styles.botaoAcao}
           onPress={() => {
-            setFormulario({ ...formulario, tipo: 'produto' });
-            setModalVisible(true);
+            setFormulario({ ...formulario, tipo: 'produto' })
+            setModalVisible(true)
           }}
         >
           <Text style={styles.textoBotaoAcao}>Adicionar Produto</Text>
@@ -186,7 +169,7 @@ function CatalogoInterno() {
         </View>
       </Modal>
     </ScrollView>
-  );
+  )
 }
 
 export default function CatalogoProtegido() {
@@ -194,7 +177,7 @@ export default function CatalogoProtegido() {
     <AuthGuard>
       <CatalogoInterno />
     </AuthGuard>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -299,4 +282,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#160b30',
   },
-});
+})
