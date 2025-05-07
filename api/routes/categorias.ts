@@ -16,7 +16,6 @@ router.get("/", async (req, res) => {
   }
 })
 
-// Criar categoria
 router.post("/", async (req, res) => {
   const { nome, empresaId } = req.body
 
