@@ -39,9 +39,9 @@ export default function Login() {
         resizeMode="cover"
       />
       <View style={styles.form}>
-        <Text style={styles.label}>CPF:</Text>
+        <Text style={styles.label}>Cnpj:</Text>
         <TextInput
-          placeholder="Digite seu CPF"
+          placeholder="Digite seu Cnpj"
           placeholderTextColor="#999"
           style={styles.input}
           onChangeText={setCpf}

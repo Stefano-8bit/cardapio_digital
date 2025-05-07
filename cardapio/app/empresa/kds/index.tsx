@@ -1,60 +1,53 @@
 import { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { router } from 'expo-router';
 import AuthGuard from '../../../components/AuthGuard';
 import { styles } from './kds.styles';
 
-export default function KDS() {
-  const [pedidos, setPedidos] = useState([
-    {
-      id: 1,
-      cliente: 'João',
-      produto: 'Cerveja',
-      valor: '10,00',
-      status: 'confirmado',
-      criadoEm: Date.now(),
-    },
-    {
-      id: 2,
-      cliente: 'Maria',
-      produto: 'Refrigerante',
-      valor: '8,00',
-      status: 'pendente',
-      criadoEm: Date.now(),
-    },
-    {
-      id: 3,
-      cliente: 'Pedro',
-      produto: 'Vodka',
-      valor: '25,00',
-      status: 'pendente',
-      criadoEm: Date.now(),
-    },
-    {
-      id: 4,
-      cliente: 'Ana',
-      produto: 'Água',
-      valor: '5,00',
-      status: 'pronto',
-      criadoEm: Date.now(),
-    },
-  ]);
+type Pedido = {
+  id: number;
+  status: string;
+  valor: number;
+  quantidade: number;
+  horario: string;
+  produto: { nome: string };
+  usuario: { nome: string };
+};
 
-  const [_, forceUpdate] = useState(false);
+export default function KDS() {
+  const [pedidos, setPedidos] = useState<Pedido[]>([]);
+
+  async function carregarPedidos() {
+    try {
+      const res = await fetch('http://localhost:3004/pedidos');
+      const data = await res.json();
+      setPedidos(data);
+    } catch (error) {
+      console.error('Erro ao carregar pedidos:', error);
+    }
+  }
+
+  async function atualizarStatus(id: number, novoStatus: string) {
+    try {
+      await fetch(`http://localhost:3004/pedidos/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: novoStatus }),
+      });
+      carregarPedidos(); // atualiza após mudança
+    } catch (error) {
+      Alert.alert('Erro', 'Não foi possível atualizar o status');
+    }
+  }
 
   useEffect(() => {
-    const interval = setInterval(() => forceUpdate((v) => !v), 1000);
+    carregarPedidos();
+    const interval = setInterval(carregarPedidos, 5000);
     return () => clearInterval(interval);
   }, []);
 
-  const atualizarStatus = (id: number, novoStatus: string) => {
-    setPedidos((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, status: novoStatus } : p))
-    );
-  };
-
   const corStatus = (status: string) => {
-    switch (status) {
+    switch (status.toLowerCase()) {
       case 'confirmado':
         return '#160b30';
       case 'cancelado':
@@ -66,8 +59,10 @@ export default function KDS() {
     }
   };
 
-  const segundosParaTempo = (ms: number) => {
-    const s = Math.floor((Date.now() - ms) / 1000);
+  const segundosParaTempo = (iso: string) => {
+    const inicio = new Date(iso).getTime();
+    const agora = Date.now();
+    const s = Math.floor((agora - inicio) / 1000);
     const min = Math.floor(s / 60);
     const sec = s % 60;
     return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
@@ -100,20 +95,20 @@ export default function KDS() {
           <View key={p.id} style={styles.row}>
             <View style={[styles.statusCol, { backgroundColor: corStatus(p.status) }]} />
             <Text style={styles.col}>{p.id}</Text>
-            <Text style={styles.col}>{p.cliente}</Text>
-            <Text style={styles.col}>{p.produto}</Text>
-            <Text style={styles.col}>{p.valor}</Text>
+            <Text style={styles.col}>{p.usuario?.nome || 'Cliente'}</Text>
+            <Text style={styles.col}>{p.produto?.nome || 'Produto'}</Text>
+            <Text style={styles.col}>R$ {p.valor.toFixed(2)}</Text>
 
-            <TouchableOpacity style={styles.btn} onPress={() => atualizarStatus(p.id, 'cancelado')}>
+            <TouchableOpacity style={styles.btn} onPress={() => atualizarStatus(p.id, 'CANCELADO')}>
               <Text style={styles.btnText}>X</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.btn} onPress={() => atualizarStatus(p.id, 'confirmado')}>
+            <TouchableOpacity style={styles.btn} onPress={() => atualizarStatus(p.id, 'CONFIRMADO')}>
               <Text style={styles.btnText}>✔</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.btn} onPress={() => atualizarStatus(p.id, 'pronto')}>
-              <Text style={styles.btnText}>{segundosParaTempo(p.criadoEm)}</Text>
+            <TouchableOpacity style={styles.btn} onPress={() => atualizarStatus(p.id, 'PRONTO')}>
+              <Text style={styles.btnText}>{segundosParaTempo(p.horario)}</Text>
             </TouchableOpacity>
           </View>
         ))}

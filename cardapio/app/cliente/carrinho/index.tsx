@@ -7,25 +7,56 @@ import {
   Alert,
 } from 'react-native';
 import { useCarrinho } from '../../../hooks/useCarrinho';
+import { useAuth } from '../../../hooks/useAuth';
 import { router } from 'expo-router';
 import ProtectedRoute from '../../../components/ProtectedRoute';
 import { styles } from './carrinho.styles';
 
 function CarrinhoContent() {
   const { carrinho, remover, limpar, atualizarQuantidade } = useCarrinho();
+  const { usuario } = useAuth();
   const [metodoPagamento, setMetodoPagamento] = useState('');
 
   const total = carrinho.reduce((soma, item) => soma + item.valor * item.quantidade, 0);
 
-  function finalizarPedido() {
+  async function finalizarPedido() {
     if (!metodoPagamento) {
       Alert.alert('Escolha um método de pagamento');
       return;
     }
-    Alert.alert('Pedido finalizado', `Pagamento: ${metodoPagamento}`);
-    limpar();
-    const pedidoId = Date.now();
-    router.push(`/cliente/pedido/${pedidoId}`);
+
+    if (!usuario) {
+      Alert.alert('Erro', 'Usuário não autenticado');
+      return;
+    }
+
+    try {
+      for (const item of carrinho) {
+        const res = await fetch('http://localhost:3004/pedidos', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            usuarioId: String(usuario.id),
+            produtoId: item.id,
+            valor: item.valor,
+            quantidade: item.quantidade,
+          }),
+        });
+
+        if (!res.ok) {
+          const erro = await res.json();
+          console.error('Erro ao criar pedido:', erro);
+          throw new Error('Erro ao criar pedido');
+        }
+      }
+
+      Alert.alert('Pedido enviado com sucesso', `Pagamento: ${metodoPagamento}`);
+      limpar();
+      const pedidoId = Date.now(); // pode usar ID real futuramente
+      router.push(`/cliente/pedido/${pedidoId}`);
+    } catch (err) {
+      Alert.alert('Erro', 'Não foi possível enviar o pedido');
+    }
   }
 
   return (

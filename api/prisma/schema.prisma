@@ -52,9 +52,11 @@ model Pedido {
   produto     Produto      @relation(fields: [produtoId], references: [id])
   status      StatusPedido @default(PENDENTE)
   valor       Float
+  quantidade  Int          @default(1) 
   horario     DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 }
+
 
 enum StatusPedido {
   PENDENTE
