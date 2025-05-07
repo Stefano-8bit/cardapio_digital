@@ -1,10 +1,16 @@
 ﻿import { Slot } from 'expo-router';
 import { CarrinhoProvider } from '../hooks/useCarrinho';
+import { PedidoProvider } from '../hooks/usePedido';
+import { AuthProvider } from '../hooks/useAuth'; 
 
 export default function Layout() {
   return (
-    <CarrinhoProvider>
-      <Slot />
-    </CarrinhoProvider>
+    <AuthProvider>
+      <PedidoProvider>
+        <CarrinhoProvider>
+          <Slot />
+        </CarrinhoProvider>
+      </PedidoProvider>
+    </AuthProvider>
   );
 }

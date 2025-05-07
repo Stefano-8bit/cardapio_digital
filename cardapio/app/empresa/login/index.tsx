@@ -1,10 +1,10 @@
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Alert } from 'react-native';
-import { usePedido } from '../../../hooks/usePedido';
-import { router } from 'expo-router';
 import { useState } from 'react';
+import { router } from 'expo-router';
+import { useAuth } from '../../../hooks/useAuth'; // usa o hook novo
 
 export default function Login() {
-  const { setPedido } = usePedido();
+  const { login } = useAuth(); // função login do contexto
   const [cpf, setCpf] = useState('');
   const [senha, setSenha] = useState('');
 
@@ -23,7 +23,8 @@ export default function Login() {
         return;
       }
 
-      setPedido((p) => ({ ...p, cliente: data }));
+      // salva no contexto de autenticação
+      login(data.usuario || data); // ajusta aqui se tua API manda diferente
       router.push('/empresa/home');
     } catch (err) {
       Alert.alert('Erro', 'Não foi possível conectar com o servidor');

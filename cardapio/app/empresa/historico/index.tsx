@@ -1,7 +1,8 @@
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { router } from 'expo-router';
+import AuthGuard from '../../../components/AuthGuard';
 
-export default function Historico() {
+function HistoricoInterno() {
   const pedidos = [
     { id: 1, cliente: 'João', produto: 'Cerveja', valor: '10,00' },
     { id: 2, cliente: 'Maria', produto: 'Refrigerante', valor: '8,00' },
@@ -39,6 +40,14 @@ export default function Historico() {
         ))}
       </View>
     </ScrollView>
+  );
+}
+
+export default function HistoricoProtegido() {
+  return (
+    <AuthGuard>
+      <HistoricoInterno />
+    </AuthGuard>
   );
 }
 

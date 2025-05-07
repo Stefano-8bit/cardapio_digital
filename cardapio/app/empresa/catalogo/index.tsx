@@ -10,6 +10,7 @@ import {
   Alert,
 } from 'react-native';
 import { router } from 'expo-router';
+import AuthGuard from '../../../components/AuthGuard'; // 👈 Importa o guard
 
 type Produto = {
   id: number;
@@ -22,7 +23,7 @@ type Categoria = {
   produtos: Produto[];
 };
 
-export default function Catalogo() {
+function CatalogoInterno() {
   const [modalVisible, setModalVisible] = useState(false);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [formulario, setFormulario] = useState({
@@ -185,6 +186,14 @@ export default function Catalogo() {
         </View>
       </Modal>
     </ScrollView>
+  );
+}
+
+export default function CatalogoProtegido() {
+  return (
+    <AuthGuard>
+      <CatalogoInterno />
+    </AuthGuard>
   );
 }
 
