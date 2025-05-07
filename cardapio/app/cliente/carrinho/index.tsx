@@ -11,10 +11,10 @@ import { useCarrinho } from '../../../hooks/useCarrinho';
 import { router } from 'expo-router';
 
 export default function Carrinho() {
-  const { carrinho, remover, limpar, atualizarQuantidade } = useCarrinho();
+  const { carrinho, remover, limpar } = useCarrinho();
   const [metodoPagamento, setMetodoPagamento] = useState('');
 
-  const total = carrinho.reduce((soma, item) => soma + item.valor * item.quantidade, 0);
+  const total = carrinho.reduce((soma, item) => soma + item.valor, 0);
 
   function finalizarPedido() {
     if (!metodoPagamento) {
@@ -23,8 +23,8 @@ export default function Carrinho() {
     }
     Alert.alert('Pedido finalizado', `Pagamento: ${metodoPagamento}`);
     limpar();
-    const pedidoId = Date.now();
-    router.push(`/cliente/pedido/${pedidoId}`);
+    const pedidoId = Date.now(); // id fictício para simular redirecionamento
+    router.push(`/cliente/pedido/${pedidoId}`); // redireciona para tela de status do pedido
   }
 
   return (
@@ -41,20 +41,9 @@ export default function Carrinho() {
         <View key={`${item.id}-${index}`} style={styles.item}>
           <View style={styles.infoProduto}>
             <Text style={styles.nome}>{item.nome}</Text>
-            <Text style={styles.valor}>R$ {(item.valor * item.quantidade).toFixed(2)}</Text>
+            <Text style={styles.valor}>R$ {item.valor.toFixed(2)}</Text>
             {item.descricao && <Text style={styles.descricao}>{item.descricao}</Text>}
-
-            <View style={styles.quantidadeContainer}>
-              <TouchableOpacity onPress={() => atualizarQuantidade(item.id, item.quantidade - 1)}>
-                <Text style={styles.qtdBotao}>-</Text>
-              </TouchableOpacity>
-              <Text style={styles.qtdNumero}>{item.quantidade}</Text>
-              <TouchableOpacity onPress={() => atualizarQuantidade(item.id, item.quantidade + 1)}>
-                <Text style={styles.qtdBotao}>+</Text>
-              </TouchableOpacity>
-            </View>
           </View>
-
           <TouchableOpacity onPress={() => remover(item.id)}>
             <Text style={styles.remover}>Remover</Text>
           </TouchableOpacity>
@@ -170,24 +159,6 @@ const styles = StyleSheet.create({
   },
   textoBotao: {
     color: '#fff',
-    fontWeight: 'bold',
-  },
-  quantidadeContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 10,
-    gap: 10,
-  },
-  qtdBotao: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    backgroundColor: '#ddd',
-    paddingHorizontal: 12,
-    paddingVertical: 2,
-    borderRadius: 6,
-  },
-  qtdNumero: {
-    fontSize: 16,
     fontWeight: 'bold',
   },
 });
