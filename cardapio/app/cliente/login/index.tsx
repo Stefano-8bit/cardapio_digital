@@ -1,4 +1,4 @@
-import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import { usePedido } from '../../../hooks/usePedido';
 import { useAuth } from '../../../hooks/useAuth';
 import { router } from 'expo-router';
@@ -9,14 +9,36 @@ export default function LoginCliente() {
   const { setPedido } = usePedido();
   const { login } = useAuth();
 
-  const [nome, setNome] = useState('');
   const [cpf, setCpf] = useState('');
+  const [senha, setSenha] = useState('');
 
-  const handleLogin = () => {
-    const usuario = { id: Date.now(), nome, cpf }; // ID fictício
-    login(usuario);
-    setPedido((p) => ({ ...p, cliente: { ...usuario } }));
-    router.replace('/cliente/introducao');
+  const handleLogin = async () => {
+    if (!cpf || !senha) {
+      Alert.alert('Erro', 'Preencha CPF e senha');
+      return;
+    }
+
+    try {
+      const res = await fetch('http://localhost:3004/usuarios/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cpf, senha }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        Alert.alert('Erro', data?.erro || 'Falha no login');
+        return;
+      }
+
+      login({ ...data.usuario, tipo: 'cliente' });
+      setPedido((p) => ({ ...p, cliente: data.usuario }));
+      router.replace('/cliente/introducao');
+    } catch (err) {
+      console.error(err);
+      Alert.alert('Erro', 'Erro de conexão com o servidor');
+    }
   };
 
   return (
@@ -27,14 +49,6 @@ export default function LoginCliente() {
         resizeMode="cover"
       />
       <View style={styles.form}>
-        <Text style={styles.label}>Nome:</Text>
-        <TextInput
-          placeholder="Digite seu nome"
-          placeholderTextColor="#999"
-          style={styles.input}
-          value={nome}
-          onChangeText={setNome}
-        />
         <Text style={styles.label}>CPF:</Text>
         <TextInput
           placeholder="Digite seu CPF"
@@ -43,8 +57,17 @@ export default function LoginCliente() {
           value={cpf}
           onChangeText={setCpf}
         />
+        <Text style={styles.label}>Senha:</Text>
+        <TextInput
+          placeholder="Digite sua senha"
+          placeholderTextColor="#999"
+          style={styles.input}
+          secureTextEntry
+          value={senha}
+          onChangeText={setSenha}
+        />
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Avançar</Text>
+          <Text style={styles.buttonText}>Entrar</Text>
         </TouchableOpacity>
       </View>
     </View>

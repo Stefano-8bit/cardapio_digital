@@ -2,8 +2,9 @@ import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 import { styles } from './introducao.styles';
+import ProtectedRoute from '../../../components/ProtectedRoute';
 
-export default function IntroducaoCliente() {
+function IntroducaoClienteContent() {
   return (
     <View style={styles.container}>
       <View style={styles.passo}>
@@ -31,5 +32,13 @@ export default function IntroducaoCliente() {
         <Text style={styles.seta}>→</Text>
       </TouchableOpacity>
     </View>
+  );
+}
+
+export default function IntroducaoCliente() {
+  return (
+    <ProtectedRoute>
+      <IntroducaoClienteContent />
+    </ProtectedRoute>
   );
 }

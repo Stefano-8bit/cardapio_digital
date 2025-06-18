@@ -19,46 +19,51 @@ function CarrinhoContent() {
 
   const total = carrinho.reduce((soma, item) => soma + item.valor * item.quantidade, 0);
 
-  async function finalizarPedido() {
-    if (!metodoPagamento) {
-      Alert.alert('Escolha um método de pagamento');
-      return;
-    }
-
-    if (!usuario) {
-      Alert.alert('Erro', 'Usuário não autenticado');
-      return;
-    }
-
-    try {
-      for (const item of carrinho) {
-        const res = await fetch('http://localhost:3004/pedidos', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            usuarioId: String(usuario.id),
-            produtoId: item.id,
-            valor: item.valor,
-            quantidade: item.quantidade,
-          }),
-        });
-
-        if (!res.ok) {
-          const erro = await res.json();
-          console.error('Erro ao criar pedido:', erro);
-          throw new Error('Erro ao criar pedido');
-        }
-      }
-
-      Alert.alert('Pedido enviado com sucesso', `Pagamento: ${metodoPagamento}`);
-      limpar();
-      const pedidoId = Date.now(); // pode usar ID real futuramente
-      router.push(`/cliente/pedido/${pedidoId}`);
-    } catch (err) {
-      Alert.alert('Erro', 'Não foi possível enviar o pedido');
-    }
+// trecho de carrinho/index.tsx
+async function finalizarPedido() {
+  if (!metodoPagamento) {
+    Alert.alert('Escolha um método de pagamento');
+    return;
   }
 
+  if (!usuario || !usuario.id) {
+    Alert.alert('Erro', 'Usuário não autenticado');
+    return;
+  }
+
+  const itens = carrinho.map((item) => ({
+    produtoId: item.id,
+    valor: item.valor,
+    quantidade: item.quantidade,
+  }));
+
+  console.log('Enviando pedido:', { usuarioId: usuario.id, itens });
+
+  try {
+    const res = await fetch('http://localhost:3004/pedidos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ usuarioId: usuario.id, itens }),
+    });
+
+    const resposta = await res.json();
+    console.log('Resposta da API:', resposta);
+
+    if (!res.ok) {
+      Alert.alert('Erro ao criar pedido', JSON.stringify(resposta));
+      return;
+    }
+
+    Alert.alert('Pedido enviado com sucesso', `Pagamento: ${metodoPagamento}`);
+    limpar();
+    router.push(`/cliente/pedido/${Date.now()}`);
+  } catch (err) {
+    console.error('Erro na requisição:', err);
+    Alert.alert('Erro', 'Não foi possível enviar o pedido');
+  }
+  console.log('Enviando pedido:', { usuarioId: usuario.id, itens });
+
+}
   return (
     <ScrollView style={styles.container}>
       <TouchableOpacity onPress={() => router.back()}>

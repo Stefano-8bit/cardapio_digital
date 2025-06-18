@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import { useCarrinho } from '../../../hooks/useCarrinho';
+import ProtectedRoute from '../../../components/ProtectedRoute';
 import { styles } from './catalogo.styles';
 
 interface Produto {
@@ -25,7 +26,7 @@ interface Categoria {
   produtos: Produto[];
 }
 
-export default function CatalogoCliente() {
+function CatalogoClienteContent() {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const { carrinho, adicionar } = useCarrinho();
 
@@ -81,5 +82,13 @@ export default function CatalogoCliente() {
         </View>
       ))}
     </ScrollView>
+  );
+}
+
+export default function CatalogoCliente() {
+  return (
+    <ProtectedRoute>
+      <CatalogoClienteContent />
+    </ProtectedRoute>
   );
 }
