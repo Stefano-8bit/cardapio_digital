@@ -4,29 +4,38 @@ import { useLocalSearchParams } from 'expo-router';
 import ProtectedRoute from '../../../../components/ProtectedRoute';
 
 function PedidoContent() {
-  const [status, setStatus] = useState<'pendente' | 'pronto'>('pendente');
+  const [status, setStatus] = useState<'PENDENTE' | 'CONFIRMADO' | 'PRONTO' | 'CANCELADO'>('PENDENTE');
   const { id } = useLocalSearchParams();
 
+  async function buscarStatus() {
+    try {
+      const res = await fetch(`http://localhost:3004/pedidos/${id}`);
+      const data = await res.json();
+      if (res.ok && data.status) {
+        setStatus(data.status);
+      }
+    } catch (err) {
+      console.error('Erro ao buscar status do pedido:', err);
+    }
+  }
+
   useEffect(() => {
-    const interval = setInterval(() => {
-      // Simulação futura: atualizar status do pedido aqui
-      // setStatus('pronto');
-    }, 10);
+    buscarStatus(); // chama uma vez ao abrir
+    const interval = setInterval(buscarStatus, 3000); // atualiza a cada 3s
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <View style={[styles.container, { backgroundColor: status === 'pronto' ? '#00cc66' : '#ff0000' }]}>
+    <View style={[styles.container, { backgroundColor: status === 'PRONTO' ? '#00cc66' : '#ff0000' }]}>
       <View style={styles.box}>
         <Text style={styles.texto}>Informações do pedido</Text>
-        <Text style={styles.texto}>Horário do pedido: {new Date().toLocaleTimeString()}</Text>
-        <Text style={styles.texto}>
-          Status: {status === 'pronto' ? 'Pronto para retirada' : 'Aguardando preparo...'}
-        </Text>
+        <Text style={styles.texto}>Status: {status === 'PRONTO' ? 'Pronto para retirada' : 'Aguardando preparo...'}</Text>
       </View>
 
       <View style={styles.botaoBox}>
-        <Text style={styles.botaoTexto}>Aguardando confirmação do bar...</Text>
+        <Text style={styles.botaoTexto}>
+          {status === 'PRONTO' ? 'Seu pedido está pronto!' : 'Aguardando confirmação do bar...'}
+        </Text>
       </View>
     </View>
   );

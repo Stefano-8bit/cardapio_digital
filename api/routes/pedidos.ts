@@ -87,4 +87,50 @@ router.get("/usuario/:usuarioId", async (req, res) => {
   }
 });
 
+// Buscar pedido por ID (cliente)
+router.get("/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const pedido = await prisma.pedido.findUnique({
+      where: { id: Number(id) },
+      select: {
+        id: true,
+        status: true,
+      },
+    });
+
+    if (!pedido) {
+      return res.status(404).json({ erro: "Pedido não encontrado" });
+    }
+
+    res.status(200).json(pedido);
+  } catch (error) {
+    res.status(400).json({ erro: "Erro ao buscar pedido", detalhes: error });
+  }
+});
+
+// Buscar status de um pedido por ID
+router.get("/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const pedido = await prisma.pedido.findUnique({
+      where: { id: Number(id) },
+      select: {
+        id: true,
+        status: true,
+      },
+    });
+
+    if (!pedido) {
+      return res.status(404).json({ erro: "Pedido não encontrado" });
+    }
+
+    res.status(200).json(pedido);
+  } catch (error) {
+    res.status(500).json({ erro: "Erro ao buscar pedido", detalhes: error });
+  }
+});
+
 export default router;
