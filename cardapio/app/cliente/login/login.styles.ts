@@ -6,10 +6,10 @@ export const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   banner: {
-    width: '100%',
-    height: 250,
-    backgroundColor: '#eee',
-  },
+  width: '100%',
+  height: 200, // pode ajustar aqui pra ficar proporcional
+  backgroundColor: '#002855', // opcional: azul escuro do fundo
+},
   form: {
     padding: 20,
   },

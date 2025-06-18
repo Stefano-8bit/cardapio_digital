@@ -2,15 +2,15 @@
 import { CarrinhoProvider } from '../hooks/useCarrinho';
 import { PedidoProvider } from '../hooks/usePedido';
 import { AuthProvider, useAuth } from '../hooks/useAuth';
-import { View, Button, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 function LogoutButton() {
   const { logout } = useAuth();
 
   return (
-    <View style={styles.logoutButton}>
-      <Button title="Logout" onPress={logout} />
-    </View>
+    <TouchableOpacity style={styles.logoutButton} onPress={logout}>
+      <Text style={styles.logoutText}>Logout</Text>
+    </TouchableOpacity>
   );
 }
 
@@ -32,8 +32,22 @@ export default function Layout() {
 const styles = StyleSheet.create({
   logoutButton: {
     position: 'absolute',
+    backgroundColor: '#160b30',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
     top: 40,
     right: 20,
     zIndex: 999,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  logoutText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
 });

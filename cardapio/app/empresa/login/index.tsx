@@ -34,9 +34,9 @@ export default function Login() {
   return (
     <View style={styles.container}>
       <Image
-        source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPgDcx-I2OLjGtFKlaAY1B89BZASmqHcZQ2w&s' }}
+        source={require('../../../assets/images/logo.png')}
         style={styles.banner}
-        resizeMode="cover"
+        resizeMode="contain"
       />
       <View style={styles.form}>
         <Text style={styles.label}>Cnpj:</Text>

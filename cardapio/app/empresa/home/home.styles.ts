@@ -13,9 +13,11 @@ export const styles = StyleSheet.create({
     borderBottomColor: '#160b30',
   },
   logo: {
-    width: 150,
-    height: 50,
-  },
+  width: 180,
+  height: 180,
+  backgroundColor: '#002855', // azul do logo
+  borderRadius: 10, // opcional
+},
   buttonContainer: {
     padding: 20,
     gap: 16,

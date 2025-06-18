@@ -9,7 +9,7 @@ export default function Home() {
       <View style={styles.container}>
         <View style={styles.logoContainer}>
           <Image
-            source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPgDcx-I2OLjGtFKlaAY1B89BZASmqHcZQ2w&s' }}
+            source={require('../../../assets/images/logo.png')}
             style={styles.logo}
             resizeMode="contain"
           />
