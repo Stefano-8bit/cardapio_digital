@@ -47,7 +47,7 @@ router.post("/", async (req, res) => {
     const usuario = await prisma.usuario.create({
       data: { nome, cpf, senha: hash }
     })
-    res.status(201).json(usuario)
+    res.status(201).json({ usuario })
   } catch (error) {
     res.status(400).json(error)
   }
@@ -69,10 +69,13 @@ router.post("/login", async (req, res) => {
       return
     }
 
+    // Aqui encapsula os dados dentro de `usuario`
     res.status(200).json({
-      id: usuario.id,
-      nome: usuario.nome,
-      cpf: usuario.cpf
+      usuario: {
+        id: usuario.id,
+        nome: usuario.nome,
+        cpf: usuario.cpf
+      }
     })
   } catch (error) {
     res.status(400).json(error)
@@ -91,9 +94,11 @@ router.get("/:id", async (req, res) => {
       res.status(404).json({ erro: "Usuário não encontrado" })
     } else {
       res.status(200).json({
-        id: usuario.id,
-        nome: usuario.nome,
-        cpf: usuario.cpf
+        usuario: {
+          id: usuario.id,
+          nome: usuario.nome,
+          cpf: usuario.cpf
+        }
       })
     }
   } catch (error) {

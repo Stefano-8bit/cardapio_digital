@@ -1,9 +1,6 @@
-// Atualização completa do AuthContext para suportar cliente e empresa com persistência de login
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Tipos genéricos para cliente ou empresa
 export type Usuario = {
   id: string;
   nome: string;

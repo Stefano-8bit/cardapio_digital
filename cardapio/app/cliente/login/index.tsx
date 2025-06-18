@@ -26,13 +26,19 @@ export default function LoginCliente() {
       });
 
       const data = await res.json();
+      console.log('data recebido do login:', data); // debug
 
       if (!res.ok) {
         Alert.alert('Erro', data?.erro || 'Falha no login');
         return;
       }
 
-      login({ ...data.usuario, tipo: 'cliente' });
+      if (!data.usuario || !data.usuario.id) {
+        Alert.alert('Erro', 'Usuário inválido retornado pela API');
+        return;
+      }
+
+      login({ ...data.usuario, id: String(data.usuario.id), tipo: 'cliente' });
       setPedido((p) => ({ ...p, cliente: data.usuario }));
       router.replace('/cliente/introducao');
     } catch (err) {
@@ -44,10 +50,10 @@ export default function LoginCliente() {
   return (
     <View style={styles.container}>
       <Image
-              source={require('../../../assets/images/logo.png')}
-              style={styles.banner}
-              resizeMode="contain"
-            />
+        source={require('../../../assets/images/logo.png')}
+        style={styles.banner}
+        resizeMode="contain"
+      />
       <View style={styles.form}>
         <Text style={styles.label}>CPF:</Text>
         <TextInput
