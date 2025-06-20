@@ -19,51 +19,54 @@ function CarrinhoContent() {
 
   const total = carrinho.reduce((soma, item) => soma + item.valor * item.quantidade, 0);
 
-// trecho de carrinho/index.tsx
-async function finalizarPedido() {
-  if (!metodoPagamento) {
-    Alert.alert('Escolha um método de pagamento');
-    return;
-  }
-
-  if (!usuario || !usuario.id) {
-    Alert.alert('Erro', 'Usuário não autenticado');
-    return;
-  }
-
-  const itens = carrinho.map((item) => ({
-    produtoId: item.id,
-    valor: item.valor,
-    quantidade: item.quantidade,
-  }));
-
-  console.log('Enviando pedido:', { usuarioId: usuario.id, itens });
-
-  try {
-    const res = await fetch('http://localhost:3004/pedidos', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ usuarioId: usuario.id, itens }),
-    });
-
-    const resposta = await res.json();
-    console.log('Resposta da API:', resposta);
-
-    if (!res.ok) {
-      Alert.alert('Erro ao criar pedido', JSON.stringify(resposta));
+  async function finalizarPedido() {
+    if (!metodoPagamento) {
+      Alert.alert('Escolha um método de pagamento');
       return;
     }
 
-    Alert.alert('Pedido enviado com sucesso', `Pagamento: ${metodoPagamento}`);
-    limpar();
-    router.push(`/cliente/pedido/${Date.now()}`);
-  } catch (err) {
-    console.error('Erro na requisição:', err);
-    Alert.alert('Erro', 'Não foi possível enviar o pedido');
-  }
-  console.log('Enviando pedido:', { usuarioId: usuario.id, itens });
+    if (!usuario || !usuario.id) {
+      Alert.alert('Erro', 'Usuário não autenticado');
+      return;
+    }
 
-}
+    const itens = carrinho.map((item) => ({
+      produtoId: item.id,
+      valor: item.valor,
+      quantidade: item.quantidade,
+    }));
+
+    console.log('Enviando pedido:', { usuarioId: usuario.id, itens });
+
+    try {
+      const res = await fetch('http://localhost:3004/pedidos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ usuarioId: usuario.id, itens }),
+      });
+
+      const resposta = await res.json();
+      console.log('Resposta da API:', resposta);
+
+      if (!res.ok) {
+        Alert.alert('Erro ao criar pedido', JSON.stringify(resposta));
+        return;
+      }
+
+      const primeiroId = resposta[0]?.id;
+      if (primeiroId) {
+        Alert.alert('Pedido enviado com sucesso', `Pagamento: ${metodoPagamento}`);
+        limpar();
+        router.push(`/cliente/pedido/${primeiroId}`);
+      } else {
+        Alert.alert('Erro', 'Não foi possível identificar o pedido.');
+      }
+    } catch (err) {
+      console.error('Erro na requisição:', err);
+      Alert.alert('Erro', 'Não foi possível enviar o pedido');
+    }
+  }
+
   return (
     <ScrollView style={styles.container}>
       <TouchableOpacity onPress={() => router.back()}>

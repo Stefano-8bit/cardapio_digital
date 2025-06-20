@@ -103,7 +103,7 @@ export default function KDS() {
               <Text style={styles.btnText}>X</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.btn} onPress={() => atualizarStatus(p.id, 'CONFIRMADO')}>
+            <TouchableOpacity style={styles.btn} onPress={() => atualizarStatus(p.id, 'PRONTO')}>
               <Text style={styles.btnText}>✔</Text>
             </TouchableOpacity>
 

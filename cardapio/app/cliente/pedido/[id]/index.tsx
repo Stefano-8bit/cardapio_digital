@@ -20,8 +20,8 @@ function PedidoContent() {
   }
 
   useEffect(() => {
-    buscarStatus(); // chama uma vez ao abrir
-    const interval = setInterval(buscarStatus, 3000); // atualiza a cada 3s
+    buscarStatus();
+    const interval = setInterval(buscarStatus, 3000);
     return () => clearInterval(interval);
   }, []);
 
