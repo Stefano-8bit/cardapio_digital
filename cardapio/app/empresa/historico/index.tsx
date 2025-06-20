@@ -7,27 +7,40 @@ import { styles } from './historico.styles';
 type Pedido = {
   id: number;
   valor: number;
+  status: string;
   produto: { nome: string };
   usuario: { nome: string };
 };
 
 function HistoricoInterno() {
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
+  const [filtro, setFiltro] = useState<string | null>('RETIRADO');
+
+  const statusList = [null, 'RETIRADO', 'PRONTO', 'CANCELADO', 'PENDENTE', 'CONFIRMADO'];
 
   async function carregarHistorico() {
     try {
       const res = await fetch('http://localhost:3004/pedidos');
       const data = await res.json();
-      const filtrados = data.filter((p: any) => p.status === 'RETIRADO');
-      setPedidos(filtrados);
+      setPedidos(data);
     } catch (error) {
       console.error('Erro ao carregar histórico:', error);
     }
   }
 
+  function alternarFiltro() {
+    const atual = statusList.indexOf(filtro);
+    const proximo = (atual + 1) % statusList.length;
+    setFiltro(statusList[proximo]);
+  }
+
   useEffect(() => {
     carregarHistorico();
   }, []);
+
+  const pedidosFiltrados = filtro
+    ? pedidos.filter((p) => p.status === filtro)
+    : pedidos;
 
   return (
     <ScrollView style={styles.container}>
@@ -36,8 +49,8 @@ function HistoricoInterno() {
       </TouchableOpacity>
 
       <View style={styles.filtroRow}>
-        <TouchableOpacity style={styles.filtroBtn}>
-          <Text style={styles.filtroBtnText}>Filtro</Text>
+        <TouchableOpacity style={styles.filtroBtn} onPress={alternarFiltro}>
+          <Text style={styles.filtroBtnText}>Filtro: {filtro || 'Todos'}</Text>
         </TouchableOpacity>
       </View>
 
@@ -49,7 +62,7 @@ function HistoricoInterno() {
           <Text style={styles.colHeader}>Valor</Text>
         </View>
 
-        {pedidos.map((p) => (
+        {pedidosFiltrados.map((p) => (
           <View key={p.id} style={styles.row}>
             <Text style={styles.col}>{p.id}</Text>
             <Text style={styles.col}>{p.usuario?.nome || 'Cliente'}</Text>
