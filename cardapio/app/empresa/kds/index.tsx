@@ -91,27 +91,29 @@ export default function KDS() {
           <Text style={styles.col}>✓</Text>
         </View>
 
-        {pedidos.map((p) => (
-          <View key={p.id} style={styles.row}>
-            <View style={[styles.statusCol, { backgroundColor: corStatus(p.status) }]} />
-            <Text style={styles.col}>{p.id}</Text>
-            <Text style={styles.col}>{p.usuario?.nome || 'Cliente'}</Text>
-            <Text style={styles.col}>{p.produto?.nome || 'Produto'}</Text>
-            <Text style={styles.col}>R$ {p.valor.toFixed(2)}</Text>
+        {pedidos
+          .filter((p) => p.status !== 'RETIRADO') // oculta retirados
+          .map((p) => (
+            <View key={p.id} style={styles.row}>
+              <View style={[styles.statusCol, { backgroundColor: corStatus(p.status) }]} />
+              <Text style={styles.col}>{p.id}</Text>
+              <Text style={styles.col}>{p.usuario?.nome || 'Cliente'}</Text>
+              <Text style={styles.col}>{p.produto?.nome || 'Produto'}</Text>
+              <Text style={styles.col}>R$ {p.valor.toFixed(2)}</Text>
 
-            <TouchableOpacity style={styles.btn} onPress={() => atualizarStatus(p.id, 'CANCELADO')}>
-              <Text style={styles.btnText}>X</Text>
-            </TouchableOpacity>
+              <TouchableOpacity style={styles.btn} onPress={() => atualizarStatus(p.id, 'CANCELADO')}>
+                <Text style={styles.btnText}>X</Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity style={styles.btn} onPress={() => atualizarStatus(p.id, 'PRONTO')}>
-              <Text style={styles.btnText}>✔</Text>
-            </TouchableOpacity>
+              <TouchableOpacity style={styles.btn} onPress={() => atualizarStatus(p.id, 'PRONTO')}>
+                <Text style={styles.btnText}>✔</Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity style={styles.btn} onPress={() => atualizarStatus(p.id, 'PRONTO')}>
-              <Text style={styles.btnText}>{segundosParaTempo(p.horario)}</Text>
-            </TouchableOpacity>
-          </View>
-        ))}
+              <TouchableOpacity style={styles.btn}>
+                <Text style={styles.btnText}>{segundosParaTempo(p.horario)}</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
       </ScrollView>
     </AuthGuard>
   );

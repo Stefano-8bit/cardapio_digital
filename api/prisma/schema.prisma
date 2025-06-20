@@ -63,4 +63,5 @@ enum StatusPedido {
   CONFIRMADO
   PRONTO
   CANCELADO
+  RETIRADO
 }

@@ -21,7 +21,7 @@ router.post("/", async (req, res) => {
         usuarioId,
         NOT: {
           status: {
-            in: ["PRONTO", "CANCELADO"],
+            in: ["PRONTO", "CANCELADO", "RETIRADO"],
           },
         },
       },
@@ -76,14 +76,14 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Atualizar status (KDS)
+// Atualizar status (KDS e Cliente)
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
 
   console.log(`➡️ PUT /pedidos/${id} - Novo status:`, status);
 
-  const statusValido = ["PENDENTE", "CONFIRMADO", "PRONTO", "CANCELADO"];
+  const statusValido = ["PENDENTE", "CONFIRMADO", "PRONTO", "CANCELADO", "RETIRADO"];
   if (!statusValido.includes(status)) {
     console.log("❌ Status inválido:", status);
     return res.status(400).json({ erro: "Status inválido" });
