@@ -3,13 +3,14 @@ import {
   View,
   Text,
   ScrollView,
-  StyleSheet,
   TouchableOpacity,
   Image,
   Alert,
 } from 'react-native';
-import { useLocalSearchParams, router } from 'expo-router';
+import { router } from 'expo-router';
 import { useCarrinho } from '../../../../hooks/useCarrinho';
+import ProtectedRoute from '../../../../components/ProtectedRoute';
+import { styles } from '../catalogo.styles';
 
 interface Produto {
   id: number;
@@ -25,14 +26,13 @@ interface Categoria {
   produtos: Produto[];
 }
 
-export default function CatalogoPorEmpresa() {
+function CatalogoClienteContent() {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const { carrinho, adicionar } = useCarrinho();
-  const { id } = useLocalSearchParams();
 
   async function carregarCategorias() {
     try {
-      const res = await fetch(`http://localhost:3004/categorias?empresaId=${id}`);
+      const res = await fetch('http://localhost:3004/categorias');
       const data = await res.json();
       setCategorias(data);
     } catch (error) {
@@ -46,16 +46,22 @@ export default function CatalogoPorEmpresa() {
   }
 
   useEffect(() => {
-    if (id) carregarCategorias();
-  }, [id]);
+    carregarCategorias();
+  }, []);
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.logo}>LOGO</Text>
-        <TouchableOpacity onPress={() => router.push('/cliente/carrinho')}>
-          <Text style={styles.carrinho}>Carrinho ({carrinho.length}) →</Text>
-        </TouchableOpacity>
+
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <TouchableOpacity onPress={() => router.push('../cliente/pedidos')}>
+            <Text style={styles.botaoTopo}>Pedidos</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push('/cliente/carrinho')}>
+            <Text style={styles.carrinho}>Carrinho ({carrinho.length}) →</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {categorias.map((categoria) => (
@@ -69,9 +75,7 @@ export default function CatalogoPorEmpresa() {
               <View style={styles.infoProduto}>
                 <Text style={styles.nomeProduto}>{produto.nome}</Text>
                 <Text style={styles.valorProduto}>R$ {produto.valor.toFixed(2)}</Text>
-                {produto.descricao && (
-                  <Text style={styles.descProduto}>{produto.descricao}</Text>
-                )}
+                {produto.descricao && <Text style={styles.descProduto}>{produto.descricao}</Text>}
                 <TouchableOpacity
                   style={styles.botaoAdicionar}
                   onPress={() => adicionarAoCarrinho(produto)}
@@ -87,76 +91,10 @@ export default function CatalogoPorEmpresa() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    padding: 16,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  logo: {
-    fontWeight: 'bold',
-    fontSize: 18,
-  },
-  carrinho: {
-    fontSize: 16,
-    color: '#160b30',
-  },
-  categoriaBloco: {
-    marginBottom: 24,
-  },
-  categoriaTitulo: {
-    backgroundColor: '#ddd',
-    padding: 6,
-    marginBottom: 10,
-    fontWeight: 'bold',
-  },
-  cardProduto: {
-    backgroundColor: '#f2f2f2',
-    borderRadius: 6,
-    marginBottom: 12,
-    flexDirection: 'row',
-    padding: 10,
-  },
-  fotoProduto: {
-    width: 80,
-    height: 80,
-    borderRadius: 6,
-    marginRight: 10,
-    backgroundColor: '#ccc',
-  },
-  infoProduto: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  nomeProduto: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    marginBottom: 4,
-  },
-  valorProduto: {
-    fontSize: 14,
-    color: '#160b30',
-    marginBottom: 4,
-  },
-  descProduto: {
-    fontSize: 12,
-    color: '#555',
-  },
-  botaoAdicionar: {
-    marginTop: 8,
-    backgroundColor: '#ffcc00',
-    padding: 8,
-    borderRadius: 4,
-    alignItems: 'center',
-  },
-  textoBotao: {
-    color: '#160b30',
-    fontWeight: 'bold',
-  },
-});
+export default function CatalogoCliente() {
+  return (
+    <ProtectedRoute>
+      <CatalogoClienteContent />
+    </ProtectedRoute>
+  );
+}

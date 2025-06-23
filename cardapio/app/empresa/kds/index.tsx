@@ -34,8 +34,8 @@ export default function KDS() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: novoStatus }),
       });
-      carregarPedidos(); // atualiza após mudança
-    } catch (error) {
+      carregarPedidos();
+    } catch {
       Alert.alert('Erro', 'Não foi possível atualizar o status');
     }
   }
@@ -48,14 +48,10 @@ export default function KDS() {
 
   const corStatus = (status: string) => {
     switch (status.toLowerCase()) {
-      case 'confirmado':
-        return '#160b30';
-      case 'cancelado':
-        return '#ff4d4d';
-      case 'pronto':
-        return '#ffd700';
-      default:
-        return '#999';
+      case 'confirmado': return '#160b30';
+      case 'cancelado': return '#ff4d4d';
+      case 'pronto': return '#ffd700';
+      default: return '#999';
     }
   };
 
@@ -65,8 +61,34 @@ export default function KDS() {
     const s = Math.floor((agora - inicio) / 1000);
     const min = Math.floor(s / 60);
     const sec = s % 60;
-    return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+    return { total: s, display: `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}` };
   };
+
+  const corFundoTempo = (segundos: number) => {
+    if (segundos <= 900) return '#cce5ff';     // azul
+    if (segundos <= 1800) return '#fff4cc';    // amarelo
+    return '#ffcccc';                          // vermelho
+  };
+
+  // NOVA ORDENACAO CORRETA
+  const pedidosOrdenados = [...pedidos]
+    .filter((p) => p.status !== 'RETIRADO')
+    .sort((a, b) => {
+      const tempoA = segundosParaTempo(a.horario).total;
+      const tempoB = segundosParaTempo(b.horario).total;
+
+      const prioridade = (s: number) => {
+        if (s > 1800) return 0; // vermelho
+        if (s > 900) return 1;  // amarelo
+        return 2;               // azul
+      };
+
+      const pA = prioridade(tempoA);
+      const pB = prioridade(tempoB);
+
+      if (pA !== pB) return pA - pB;
+      return tempoB - tempoA; // se mesma cor, mais antigo vem primeiro
+    });
 
   return (
     <AuthGuard>
@@ -91,10 +113,12 @@ export default function KDS() {
           <Text style={styles.col}>✓</Text>
         </View>
 
-        {pedidos
-          .filter((p) => p.status !== 'RETIRADO') // oculta retirados
-          .map((p) => (
-            <View key={p.id} style={styles.row}>
+        {pedidosOrdenados.map((p) => {
+          const tempo = segundosParaTempo(p.horario);
+          const corFundo = corFundoTempo(tempo.total);
+
+          return (
+            <View key={p.id} style={[styles.row, { backgroundColor: corFundo }]}>
               <View style={[styles.statusCol, { backgroundColor: corStatus(p.status) }]} />
               <Text style={styles.col}>{p.id}</Text>
               <Text style={styles.col}>{p.usuario?.nome || 'Cliente'}</Text>
@@ -109,11 +133,12 @@ export default function KDS() {
                 <Text style={styles.btnText}>✔</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.btn}>
-                <Text style={styles.btnText}>{segundosParaTempo(p.horario)}</Text>
-              </TouchableOpacity>
+              <View style={styles.btn}>
+                <Text style={styles.btnText}>{tempo.display}</Text>
+              </View>
             </View>
-          ))}
+          );
+        })}
       </ScrollView>
     </AuthGuard>
   );

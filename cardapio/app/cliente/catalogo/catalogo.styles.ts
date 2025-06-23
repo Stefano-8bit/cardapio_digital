@@ -12,6 +12,22 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 16,
   },
+  headerButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  botaoTopo: {
+    backgroundColor: '#160b30',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+    marginRight: 12,
+  },
+  botaoTopoTexto: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
   logo: {
     fontWeight: 'bold',
     fontSize: 18,

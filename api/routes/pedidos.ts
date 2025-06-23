@@ -16,22 +16,6 @@ router.post("/", async (req, res) => {
   }
 
   try {
-    const pedidosExistentes = await prisma.pedido.findMany({
-      where: {
-        usuarioId,
-        NOT: {
-          status: {
-            in: ["PRONTO", "CANCELADO", "RETIRADO"],
-          },
-        },
-      },
-    });
-
-    if (pedidosExistentes.length > 0) {
-      console.log("⚠️ Pedido já em andamento:", pedidosExistentes);
-      return res.status(400).json({ erro: "Você já possui um pedido em andamento" });
-    }
-
     const pedidosCriados = await Promise.all(
       itens.map((item) => {
         console.log("🛒 Criando pedido para item:", item);

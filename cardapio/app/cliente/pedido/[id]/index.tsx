@@ -1,3 +1,4 @@
+// mesmo início de sempre
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Alert } from 'react-native';
 import { useAuth } from '../../../../hooks/useAuth';
@@ -7,9 +8,8 @@ import { router } from 'expo-router';
 type Pedido = {
   id: number;
   status: 'PENDENTE' | 'CONFIRMADO' | 'PRONTO' | 'CANCELADO' | 'RETIRADO';
-  produto: {
-    nome: string;
-  };
+  produto: { nome: string };
+  horario: string;
 };
 
 function PedidosContent() {
@@ -33,22 +33,12 @@ function PedidosContent() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: 'RETIRADO' }),
       });
-
-      if (res.ok) {
-        buscarPedidos();
-      } else {
-        Alert.alert('Erro', 'Falha ao confirmar retirada');
-      }
-    } catch (err) {
+      if (res.ok) buscarPedidos();
+      else Alert.alert('Erro', 'Falha ao confirmar retirada');
+    } catch {
       Alert.alert('Erro', 'Erro ao atualizar status');
     }
   }
-
-  useEffect(() => {
-    buscarPedidos();
-    const interval = setInterval(buscarPedidos, 3000);
-    return () => clearInterval(interval);
-  }, []);
 
   function corStatus(status: string) {
     if (status === 'PRONTO') return '#00cc66';
@@ -56,17 +46,45 @@ function PedidosContent() {
     return '#cc0000';
   }
 
+  function formatarPrevisao(horario: string) {
+    const data = new Date(horario);
+    data.setMinutes(data.getMinutes() + 30);
+    return data.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function prioridade(status: string) {
+    if (status === 'PRONTO') return 0;
+    if (status === 'PENDENTE' || status === 'CONFIRMADO') return 1;
+    return 2; // RETIRADO ou CANCELADO
+  }
+
+  const pedidosOrdenados = [...pedidos].sort((a, b) => {
+    const pA = prioridade(a.status);
+    const pB = prioridade(b.status);
+    if (pA !== pB) return pA - pB;
+    return new Date(b.horario).getTime() - new Date(a.horario).getTime();
+  });
+
+  useEffect(() => {
+    buscarPedidos();
+    const interval = setInterval(buscarPedidos, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <View style={styles.container}>
       <ScrollView>
         <Text style={styles.titulo}>Seus Pedidos</Text>
 
-        {pedidos.map((pedido) => (
+        {pedidosOrdenados.map((pedido) => (
           <View key={pedido.id} style={[styles.cardContainer]}>
             <View style={[styles.statusBar, { backgroundColor: corStatus(pedido.status) }]} />
             <View style={styles.card}>
               <Text style={styles.texto}>Pedido #{pedido.id}</Text>
               <Text style={styles.texto}>Produto: {pedido.produto.nome}</Text>
+              <Text style={styles.texto}>
+                Previsão de Entrega: {formatarPrevisao(pedido.horario)}
+              </Text>
               <Text style={styles.texto}>
                 Status:{' '}
                 {pedido.status === 'PRONTO'
@@ -76,16 +94,14 @@ function PedidosContent() {
                   : 'Aguardando preparo...'}
               </Text>
 
-              {pedido.status === 'PRONTO' && (
+              {pedido.status === 'PRONTO' ? (
                 <TouchableOpacity
-                  style={styles.botao}
+                  style={[styles.botao, styles.botaoVerde]}
                   onPress={() => confirmarRetirada(pedido.id)}
                 >
                   <Text style={styles.botaoTexto}>Confirmar Retirada</Text>
                 </TouchableOpacity>
-              )}
-
-              {pedido.status !== 'PRONTO' && (
+              ) : (
                 <View style={styles.botao}>
                   <Text style={styles.botaoTexto}>
                     {pedido.status === 'RETIRADO'
@@ -115,15 +131,8 @@ export default function Pedidos() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  titulo: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    padding: 16,
-  },
+  container: { flex: 1, backgroundColor: '#fff' },
+  titulo: { fontSize: 20, fontWeight: 'bold', padding: 16 },
   cardContainer: {
     flexDirection: 'row',
     marginHorizontal: 16,
@@ -131,9 +140,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     overflow: 'hidden',
   },
-  statusBar: {
-    width: 10,
-  },
+  statusBar: { width: 10 },
   card: {
     flex: 1,
     backgroundColor: '#eee',
@@ -141,10 +148,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 8,
     borderBottomRightRadius: 8,
   },
-  texto: {
-    fontSize: 16,
-    marginBottom: 6,
-  },
+  texto: { fontSize: 16, marginBottom: 6 },
   botao: {
     backgroundColor: '#fff',
     padding: 10,
@@ -152,10 +156,8 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     alignItems: 'center',
   },
-  botaoTexto: {
-    fontWeight: 'bold',
-    fontSize: 15,
-  },
+  botaoVerde: { backgroundColor: '#00cc66' },
+  botaoTexto: { fontWeight: 'bold', fontSize: 15 },
   voltarBotao: {
     backgroundColor: '#160b30',
     padding: 16,

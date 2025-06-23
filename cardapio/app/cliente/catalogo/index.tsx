@@ -53,9 +53,14 @@ function CatalogoClienteContent() {
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.logo}>LOGO</Text>
-        <TouchableOpacity onPress={() => router.push('/cliente/carrinho')}>
-          <Text style={styles.carrinho}>Carrinho ({carrinho.length}) →</Text>
-        </TouchableOpacity>
+        <View style={styles.headerButtons}>
+          <TouchableOpacity style={styles.botaoTopo} onPress={() => router.push('../cliente/pedidos')}>
+            <Text style={styles.botaoTopoTexto}>Pedidos</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push('/cliente/carrinho')}>
+            <Text style={styles.carrinho}>Carrinho ({carrinho.length}) →</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {categorias.map((categoria) => (
