@@ -1,4 +1,4 @@
-import { View, Text, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image, Alert, Modal } from 'react-native';
 import { usePedido } from '../../../hooks/usePedido';
 import { useAuth } from '../../../hooks/useAuth';
 import { router } from 'expo-router';
@@ -11,6 +11,11 @@ export default function LoginCliente() {
 
   const [cpf, setCpf] = useState('');
   const [senha, setSenha] = useState('');
+  const [showModal, setShowModal] = useState(false);
+
+  const [nomeCadastro, setNomeCadastro] = useState('');
+  const [cpfCadastro, setCpfCadastro] = useState('');
+  const [senhaCadastro, setSenhaCadastro] = useState('');
 
   const handleLogin = async () => {
     if (!cpf || !senha) {
@@ -26,7 +31,6 @@ export default function LoginCliente() {
       });
 
       const data = await res.json();
-      console.log('data recebido do login:', data); // debug
 
       if (!res.ok) {
         Alert.alert('Erro', data?.erro || 'Falha no login');
@@ -41,6 +45,34 @@ export default function LoginCliente() {
       login({ ...data.usuario, id: String(data.usuario.id), tipo: 'cliente' });
       setPedido((p) => ({ ...p, cliente: data.usuario }));
       router.replace('/cliente/introducao');
+    } catch (err) {
+      console.error(err);
+      Alert.alert('Erro', 'Erro de conexão com o servidor');
+    }
+  };
+
+  const handleCadastro = async () => {
+    if (!nomeCadastro || !cpfCadastro || !senhaCadastro) {
+      Alert.alert('Erro', 'Preencha todos os campos');
+      return;
+    }
+
+    try {
+      const res = await fetch('http://localhost:3004/usuarios', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome: nomeCadastro, cpf: cpfCadastro, senha: senhaCadastro }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        Alert.alert('Erro', data?.erro || 'Erro ao cadastrar');
+        return;
+      }
+
+      Alert.alert('Sucesso', 'Cadastro realizado. Agora faça login.');
+      setShowModal(false);
     } catch (err) {
       console.error(err);
       Alert.alert('Erro', 'Erro de conexão com o servidor');
@@ -72,10 +104,53 @@ export default function LoginCliente() {
           value={senha}
           onChangeText={setSenha}
         />
+
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>Entrar</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => setShowModal(true)}>
+          <Text style={{ color: '#160b30', textAlign: 'center', marginTop: 12 }}>
+            Não tem conta? Cadastre-se
+          </Text>
+        </TouchableOpacity>
       </View>
+
+      <Modal visible={showModal} transparent animationType="slide">
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.titulo}>Cadastro</Text>
+            <TextInput
+              placeholder="Nome"
+              placeholderTextColor="#999"
+              style={styles.input}
+              value={nomeCadastro}
+              onChangeText={setNomeCadastro}
+            />
+            <TextInput
+              placeholder="CPF"
+              placeholderTextColor="#999"
+              style={styles.input}
+              value={cpfCadastro}
+              onChangeText={setCpfCadastro}
+            />
+            <TextInput
+              placeholder="Senha"
+              placeholderTextColor="#999"
+              style={styles.input}
+              secureTextEntry
+              value={senhaCadastro}
+              onChangeText={setSenhaCadastro}
+            />
+            <TouchableOpacity style={styles.button} onPress={handleCadastro}>
+              <Text style={styles.buttonText}>Cadastrar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setShowModal(false)}>
+              <Text style={{ marginTop: 10, textAlign: 'center', color: 'red' }}>Cancelar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
