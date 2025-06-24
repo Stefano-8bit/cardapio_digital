@@ -55,7 +55,7 @@ function CatalogoClienteContent() {
         <Text style={styles.logo}>LOGO</Text>
 
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <TouchableOpacity onPress={() => router.push('../cliente/pedidos')}>
+          <TouchableOpacity style={styles.botaoTopo} onPress={() => router.push('/cliente/pedido/index')}>
             <Text style={styles.botaoTopo}>Pedidos</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => router.push('/cliente/carrinho')}>
