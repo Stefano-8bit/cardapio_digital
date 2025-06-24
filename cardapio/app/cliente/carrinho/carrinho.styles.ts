@@ -105,4 +105,17 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+    botaoVoltar: {
+    backgroundColor: '#160b30',
+    padding: 10,
+    borderRadius: 6,
+    marginBottom: 12,
+    alignItems: 'flex-start',
+  },
+  textoBotaoVoltar: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+
 });

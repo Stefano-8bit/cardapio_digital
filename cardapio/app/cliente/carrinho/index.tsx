@@ -36,8 +36,6 @@ function CarrinhoContent() {
       quantidade: item.quantidade,
     }));
 
-    console.log('Enviando pedido:', { usuarioId: usuario.id, itens });
-
     try {
       const res = await fetch('http://localhost:3004/pedidos', {
         method: 'POST',
@@ -46,7 +44,6 @@ function CarrinhoContent() {
       });
 
       const resposta = await res.json();
-      console.log('Resposta da API:', resposta);
 
       if (!res.ok) {
         Alert.alert('Erro ao criar pedido', JSON.stringify(resposta));
@@ -69,8 +66,8 @@ function CarrinhoContent() {
 
   return (
     <ScrollView style={styles.container}>
-      <TouchableOpacity onPress={() => router.back()}>
-        <Text style={styles.voltar}>{'<'} Voltar</Text>
+      <TouchableOpacity style={styles.botaoVoltar} onPress={() => router.back()}>
+        <Text style={styles.textoBotaoVoltar}>← Voltar</Text>
       </TouchableOpacity>
 
       <Text style={styles.titulo}>Seu Carrinho</Text>
