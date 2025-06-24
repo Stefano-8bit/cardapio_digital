@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
   Alert,
+  StyleSheet,
 } from 'react-native';
 import { router } from 'expo-router';
 import { useCarrinho } from '../../../hooks/useCarrinho';
@@ -49,44 +50,56 @@ function CatalogoClienteContent() {
     carregarCategorias();
   }, []);
 
-  return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.logo}>LOGO</Text>
-        <View style={styles.headerButtons}>
-          <TouchableOpacity style={styles.botaoTopo} onPress={() => router.push('/cliente/pedido/index')}>
-            <Text style={styles.botaoTopoTexto}>Pedidos</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push('/cliente/carrinho')}>
-            <Text style={styles.carrinho}>Carrinho ({carrinho.length}) →</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+  const totalItens = carrinho.reduce((soma, item) => soma + item.quantidade, 0);
 
-      {categorias.map((categoria) => (
-        <View key={categoria.id} style={styles.categoriaBloco}>
-          <Text style={styles.categoriaTitulo}>{categoria.nome}</Text>
-          {categoria.produtos.map((produto) => (
-            <View key={produto.id} style={styles.cardProduto}>
-              {produto.foto && (
-                <Image source={{ uri: produto.foto }} style={styles.fotoProduto} />
-              )}
-              <View style={styles.infoProduto}>
-                <Text style={styles.nomeProduto}>{produto.nome}</Text>
-                <Text style={styles.valorProduto}>R$ {produto.valor.toFixed(2)}</Text>
-                {produto.descricao && <Text style={styles.descProduto}>{produto.descricao}</Text>}
-                <TouchableOpacity
-                  style={styles.botaoAdicionar}
-                  onPress={() => adicionarAoCarrinho(produto)}
-                >
-                  <Text style={styles.textoBotao}>Adicionar ao Carrinho</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          ))}
+  return (
+    <View style={{ flex: 1 }}>
+      <ScrollView style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.logo}>LOGO</Text>
+          <View style={styles.headerButtons}>
+            <TouchableOpacity style={styles.botaoTopo} onPress={() => router.push('/cliente/pedido/index')}>
+              <Text style={styles.botaoTopoTexto}>Pedidos</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      ))}
-    </ScrollView>
+
+        {categorias.map((categoria) => (
+          <View key={categoria.id} style={styles.categoriaBloco}>
+            <Text style={styles.categoriaTitulo}>{categoria.nome}</Text>
+            {categoria.produtos.map((produto) => (
+              <View key={produto.id} style={styles.cardProduto}>
+                {produto.foto && (
+                  <Image source={{ uri: produto.foto }} style={styles.fotoProduto} />
+                )}
+                <View style={styles.infoProduto}>
+                  <Text style={styles.nomeProduto}>{produto.nome}</Text>
+                  <Text style={styles.valorProduto}>R$ {produto.valor.toFixed(2)}</Text>
+                  {produto.descricao && <Text style={styles.descProduto}>{produto.descricao}</Text>}
+                  <TouchableOpacity
+                    style={styles.botaoAdicionar}
+                    onPress={() => adicionarAoCarrinho(produto)}
+                  >
+                    <Text style={styles.textoBotao}>Adicionar ao Carrinho</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ))}
+          </View>
+        ))}
+      </ScrollView>
+
+      {totalItens > 0 && (
+        <TouchableOpacity
+          style={estilo.botaoCarrinhoFixo}
+          onPress={() => router.push('/cliente/carrinho')}
+        >
+          <Text style={estilo.textoBotaoCarrinho}>
+            Ver Carrinho ({totalItens}) item{totalItens > 1 ? 's' : ''}
+          </Text>
+        </TouchableOpacity>
+      )}
+    </View>
   );
 }
 
@@ -97,3 +110,16 @@ export default function CatalogoCliente() {
     </ProtectedRoute>
   );
 }
+
+const estilo = StyleSheet.create({
+  botaoCarrinhoFixo: {
+    backgroundColor: '#160b30',
+    paddingVertical: 16,
+    alignItems: 'center',
+  },
+  textoBotaoCarrinho: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+});
