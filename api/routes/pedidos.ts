@@ -63,29 +63,31 @@ router.get("/", async (req, res) => {
 // Atualizar status (KDS e Cliente)
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
-  const { status } = req.body;
+  const { status, motivoCancelamento } = req.body;
 
   console.log(`➡️ PUT /pedidos/${id} - Novo status:`, status);
 
   const statusValido = ["PENDENTE", "CONFIRMADO", "PRONTO", "CANCELADO", "RETIRADO"];
   if (!statusValido.includes(status)) {
-    console.log("❌ Status inválido:", status);
     return res.status(400).json({ erro: "Status inválido" });
   }
 
   try {
     const pedido = await prisma.pedido.update({
       where: { id: Number(id) },
-      data: { status },
+      data: {
+        status,
+        ...(status === "CANCELADO" && motivoCancelamento ? { motivoCancelamento } : {})
+      },
     });
 
-    console.log("✅ Pedido atualizado:", pedido);
     res.status(200).json(pedido);
   } catch (error) {
     console.error("❌ Erro ao atualizar status:", error);
     res.status(400).json(error);
   }
 });
+
 
 // Histórico por cliente
 router.get("/usuario/:usuarioId", async (req, res) => {

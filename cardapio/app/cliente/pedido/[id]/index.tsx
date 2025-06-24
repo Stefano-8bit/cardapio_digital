@@ -16,12 +16,14 @@ type Pedido = {
   status: 'PENDENTE' | 'CONFIRMADO' | 'PRONTO' | 'CANCELADO' | 'RETIRADO';
   produto: { nome: string };
   horario: string;
+  motivoCancelamento?: string;
 };
 
 function PedidosContent() {
   const { usuario } = useAuth();
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
   const [mostrarEntregues, setMostrarEntregues] = useState(false);
+  const [mostrarCancelados, setMostrarCancelados] = useState(false);
 
   async function buscarPedidos() {
     try {
@@ -50,6 +52,7 @@ function PedidosContent() {
   function corStatus(status: string) {
     if (status === 'PRONTO') return '#00cc66';
     if (status === 'RETIRADO') return '#aaa';
+    if (status === 'CANCELADO') return '#ff4d4d';
     return '#cc0000';
   }
 
@@ -59,7 +62,7 @@ function PedidosContent() {
     return data.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   }
 
-  function formatarRetirada(horario: string) {
+  function formatarHora(horario: string) {
     const data = new Date(horario);
     return data.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   }
@@ -70,8 +73,9 @@ function PedidosContent() {
     return () => clearInterval(interval);
   }, []);
 
-  const pedidosAtivos = pedidos.filter(p => p.status !== 'RETIRADO');
+  const pedidosAtivos = pedidos.filter(p => !['RETIRADO', 'CANCELADO'].includes(p.status));
   const pedidosEntregues = pedidos.filter(p => p.status === 'RETIRADO');
+  const pedidosCancelados = pedidos.filter(p => p.status === 'CANCELADO');
 
   return (
     <View style={styles.container}>
@@ -126,11 +130,41 @@ function PedidosContent() {
                       Previsão de Entrega: {formatarPrevisao(pedido.horario)}
                     </Text>
                     <Text style={styles.texto}>
-                      Entregue às: {formatarRetirada(pedido.horario)}
+                      Entregue às: {formatarHora(pedido.horario)}
                     </Text>
                     <View style={styles.botao}>
                       <Text style={styles.botaoTexto}>Pedido já retirado</Text>
                     </View>
+                  </View>
+                </View>
+              ))}
+          </View>
+        )}
+
+        {pedidosCancelados.length > 0 && (
+          <View style={styles.entreguesContainer}>
+            <TouchableOpacity
+              onPress={() => setMostrarCancelados(!mostrarCancelados)}
+              style={styles.abaToggle}
+            >
+              <Text style={styles.abaTexto}>
+                {mostrarCancelados ? '▼ Ocultar cancelados' : '▶ Ver pedidos cancelados'}
+              </Text>
+            </TouchableOpacity>
+
+            {mostrarCancelados &&
+              pedidosCancelados.map((pedido) => (
+                <View key={pedido.id} style={styles.cardContainer}>
+                  <View style={[styles.statusBar, { backgroundColor: '#ff4d4d' }]} />
+                  <View style={styles.card}>
+                    <Text style={styles.texto}>Pedido #{pedido.id}</Text>
+                    <Text style={styles.texto}>Produto: {pedido.produto.nome}</Text>
+                    <Text style={styles.texto}>
+                      Cancelado às: {formatarHora(pedido.horario)}
+                    </Text>
+                    {pedido.motivoCancelamento && (
+                      <Text style={styles.texto}>Motivo: {pedido.motivoCancelamento}</Text>
+                    )}
                   </View>
                 </View>
               ))}

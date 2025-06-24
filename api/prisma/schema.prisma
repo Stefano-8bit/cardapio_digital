@@ -45,18 +45,18 @@ model Usuario {
 }
 
 model Pedido {
-  id          Int          @id @default(autoincrement())
-  usuarioId   String
-  usuario     Usuario      @relation(fields: [usuarioId], references: [id])
-  produtoId   Int
-  produto     Produto      @relation(fields: [produtoId], references: [id])
-  status      StatusPedido @default(PENDENTE)
-  valor       Float
-  quantidade  Int          @default(1) 
-  horario     DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id                  Int          @id @default(autoincrement())
+  usuarioId           String
+  usuario             Usuario      @relation(fields: [usuarioId], references: [id])
+  produtoId           Int
+  produto             Produto      @relation(fields: [produtoId], references: [id])
+  status              StatusPedido @default(PENDENTE)
+  valor               Float
+  quantidade          Int          @default(1) 
+  horario             DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+  motivoCancelamento  String?      @db.Text
 }
-
 
 enum StatusPedido {
   PENDENTE

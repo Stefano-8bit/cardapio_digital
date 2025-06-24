@@ -1,5 +1,13 @@
 import { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+  Modal,
+  TextInput,
+} from 'react-native';
 import { router } from 'expo-router';
 import AuthGuard from '../../../components/AuthGuard';
 import { styles } from './kds.styles';
@@ -16,6 +24,9 @@ type Pedido = {
 
 export default function KDS() {
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [motivo, setMotivo] = useState('');
+  const [pedidoSelecionado, setPedidoSelecionado] = useState<number | null>(null);
 
   async function carregarPedidos() {
     try {
@@ -24,6 +35,28 @@ export default function KDS() {
       setPedidos(data);
     } catch (error) {
       console.error('Erro ao carregar pedidos:', error);
+    }
+  }
+
+  async function cancelarPedidoComMotivo() {
+    if (!pedidoSelecionado || !motivo.trim()) {
+      Alert.alert('Erro', 'Informe o motivo do cancelamento');
+      return;
+    }
+
+    try {
+      await fetch(`http://localhost:3004/pedidos/${pedidoSelecionado}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'CANCELADO', motivoCancelamento: motivo }),
+      });
+
+      setModalVisible(false);
+      setMotivo('');
+      setPedidoSelecionado(null);
+      await carregarPedidos();
+    } catch {
+      Alert.alert('Erro', 'Não foi possível cancelar o pedido');
     }
   }
 
@@ -61,33 +94,38 @@ export default function KDS() {
     const s = Math.floor((agora - inicio) / 1000);
     const min = Math.floor(s / 60);
     const sec = s % 60;
-    return { total: s, display: `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}` };
+    return {
+      total: s,
+      display: `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`,
+    };
   };
 
   const corFundoTempo = (segundos: number) => {
-    if (segundos <= 900) return '#cce5ff';     // azul
-    if (segundos <= 1800) return '#fff4cc';    // amarelo
-    return '#ffcccc';                          // vermelho
+    if (segundos <= 900) return '#cce5ff';
+    if (segundos <= 1800) return '#fff4cc';
+    return '#ffcccc';
   };
 
-  // NOVA ORDENACAO CORRETA
   const pedidosOrdenados = [...pedidos]
-    .filter((p) => p.status !== 'RETIRADO')
+    .filter((p) => {
+      const status = p.status.toString().toUpperCase();
+      return status !== 'RETIRADO' && status !== 'CANCELADO';
+    })
     .sort((a, b) => {
       const tempoA = segundosParaTempo(a.horario).total;
       const tempoB = segundosParaTempo(b.horario).total;
 
       const prioridade = (s: number) => {
-        if (s > 1800) return 0; // vermelho
-        if (s > 900) return 1;  // amarelo
-        return 2;               // azul
+        if (s > 1800) return 0;
+        if (s > 900) return 1;
+        return 2;
       };
 
       const pA = prioridade(tempoA);
       const pB = prioridade(tempoB);
 
       if (pA !== pB) return pA - pB;
-      return tempoB - tempoA; // se mesma cor, mais antigo vem primeiro
+      return tempoB - tempoA;
     });
 
   return (
@@ -125,11 +163,20 @@ export default function KDS() {
               <Text style={styles.col}>{p.produto?.nome || 'Produto'}</Text>
               <Text style={styles.col}>R$ {p.valor.toFixed(2)}</Text>
 
-              <TouchableOpacity style={styles.btn} onPress={() => atualizarStatus(p.id, 'CANCELADO')}>
+              <TouchableOpacity
+                style={styles.btn}
+                onPress={() => {
+                  setPedidoSelecionado(p.id);
+                  setModalVisible(true);
+                }}
+              >
                 <Text style={styles.btnText}>X</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.btn} onPress={() => atualizarStatus(p.id, 'PRONTO')}>
+              <TouchableOpacity
+                style={styles.btn}
+                onPress={() => atualizarStatus(p.id, 'PRONTO')}
+              >
                 <Text style={styles.btnText}>✔</Text>
               </TouchableOpacity>
 
@@ -140,6 +187,53 @@ export default function KDS() {
           );
         })}
       </ScrollView>
+
+      <Modal
+        visible={modalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={{
+          flex: 1,
+          backgroundColor: 'rgba(0,0,0,0.6)',
+          justifyContent: 'center',
+          alignItems: 'center',
+          padding: 20,
+        }}>
+          <View style={{
+            backgroundColor: '#fff',
+            borderRadius: 10,
+            padding: 20,
+            width: '100%',
+          }}>
+            <Text style={{ fontSize: 16, marginBottom: 10, fontWeight: 'bold' }}>
+              Motivo do Cancelamento
+            </Text>
+            <TextInput
+              style={{
+                borderWidth: 1,
+                borderColor: '#ccc',
+                padding: 10,
+                borderRadius: 6,
+                marginBottom: 16,
+              }}
+              multiline
+              value={motivo}
+              onChangeText={setMotivo}
+              placeholder="Descreva o motivo..."
+            />
+            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', gap: 10 }}>
+              <TouchableOpacity onPress={() => setModalVisible(false)}>
+                <Text style={{ color: '#999' }}>Fechar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={cancelarPedidoComMotivo}>
+                <Text style={{ color: '#160b30', fontWeight: 'bold' }}>Cancelar Pedido</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </AuthGuard>
   );
 }
