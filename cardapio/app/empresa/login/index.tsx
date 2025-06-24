@@ -39,7 +39,7 @@ export default function Login() {
         resizeMode="contain"
       />
       <View style={styles.form}>
-        <Text style={styles.label}>Cnpj:</Text>
+        <Text style={styles.label}>Nome</Text>
         <TextInput
           placeholder="Digite seu Cnpj"
           placeholderTextColor="#999"
