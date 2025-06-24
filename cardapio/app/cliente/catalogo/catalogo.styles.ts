@@ -17,7 +17,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   botaoTopo: {
-    backgroundColor: '#160b30',
+    backgroundColor: '#002855',
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 6,
@@ -34,17 +34,20 @@ export const styles = StyleSheet.create({
   },
   carrinho: {
     fontSize: 16,
-    color: '#160b30',
+    color: '#002855',
   },
   categoriaBloco: {
     marginBottom: 24,
   },
   categoriaTitulo: {
-    backgroundColor: '#160b30',
+    backgroundColor: '#002855',
     color: '#fff',
     padding: 6,
     marginBottom: 10,
     fontWeight: 'bold',
+    borderRadius: 4,
+    paddingHorizontal: 12,
+    overflow: 'hidden',
   },
   cardProduto: {
     backgroundColor: '#f2f2f2',
@@ -71,7 +74,7 @@ export const styles = StyleSheet.create({
   },
   valorProduto: {
     fontSize: 14,
-    color: '#160b30',
+    color: '#002855',
     marginBottom: 4,
   },
   descProduto: {
@@ -86,7 +89,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   textoBotao: {
-    color: '#160b30',
+    color: '#002855',
     fontWeight: 'bold',
   },
   linhaNome: {
@@ -96,7 +99,7 @@ export const styles = StyleSheet.create({
   },
   interrogacao: {
     backgroundColor: '#e6f0ff',
-    color: '#160b30',
+    color: '#002855',
     fontWeight: 'bold',
     paddingHorizontal: 8,
     borderRadius: 100,
@@ -104,6 +107,4 @@ export const styles = StyleSheet.create({
     lineHeight: 18,
     fontSize: 16,
   },
-
-
 });

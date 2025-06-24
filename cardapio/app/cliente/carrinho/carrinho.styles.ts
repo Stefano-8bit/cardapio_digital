@@ -8,7 +8,7 @@ export const styles = StyleSheet.create({
   },
   voltar: {
     fontSize: 16,
-    color: '#160b30',
+    color: '#002855',
     marginBottom: 10,
   },
   titulo: {
@@ -38,7 +38,7 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   valor: {
-    color: '#160b30',
+    color: '#002855',
     marginTop: 4,
   },
   descricao: {
@@ -74,11 +74,11 @@ export const styles = StyleSheet.create({
     backgroundColor: '#ffcc00',
   },
   metodoTexto: {
-    color: '#160b30',
+    color: '#002855',
     fontWeight: 'bold',
   },
   botaoFinalizar: {
-    backgroundColor: '#160b30',
+    backgroundColor: '#002855',
     padding: 14,
     alignItems: 'center',
     borderRadius: 6,
@@ -105,8 +105,8 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-    botaoVoltar: {
-    backgroundColor: '#160b30',
+  botaoVoltar: {
+    backgroundColor: '#002855',
     padding: 10,
     borderRadius: 6,
     marginBottom: 12,
@@ -117,5 +117,4 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
-
 });

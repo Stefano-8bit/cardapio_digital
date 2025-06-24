@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
     borderRadius: 6,
   },
   voltarText: {
-    color: '#160b30',
+    color: '#002855',
     fontWeight: 'bold',
   },
   headerBar: {
@@ -24,7 +24,7 @@ export const styles = StyleSheet.create({
     backgroundColor: '#fdf5d4',
   },
   headerBarText: {
-    color: '#160b30',
+    color: '#002855',
     fontWeight: 'bold',
   },
   statusBlock: {
@@ -35,7 +35,7 @@ export const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     padding: 5,
-    backgroundColor: '#160b30',
+    backgroundColor: '#002855',
     alignItems: 'center',
   },
   row: {
@@ -49,7 +49,7 @@ export const styles = StyleSheet.create({
   col: {
     flex: 1,
     textAlign: 'center',
-    color: '#160b30',
+    color: '#002855',
     fontWeight: '500',
   },
   statusCol: {
@@ -68,7 +68,7 @@ export const styles = StyleSheet.create({
     marginHorizontal: 2,
   },
   btnText: {
-    color: '#160b30',
+    color: '#002855',
     fontWeight: 'bold',
   },
 });
