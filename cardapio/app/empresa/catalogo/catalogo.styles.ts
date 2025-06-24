@@ -9,13 +9,13 @@ export const styles = StyleSheet.create({
     margin: 10,
     borderRadius: 6,
   },
-  textoVoltar: { color: '#160b30', fontWeight: 'bold' },
+  textoVoltar: { color: '#002855', fontWeight: 'bold' },
   acoes: { flexDirection: 'row', gap: 10, paddingHorizontal: 10, marginBottom: 10 },
-  botaoAcao: { backgroundColor: '#160b30', padding: 10, borderRadius: 6 },
+  botaoAcao: { backgroundColor: '#002855', padding: 10, borderRadius: 6 },
   textoBotaoAcao: { color: '#fff', fontWeight: 'bold' },
   secao: { marginBottom: 20, paddingHorizontal: 10 },
   tituloSecao: {
-    backgroundColor: '#160b30',
+    backgroundColor: '#002855',
     color: '#fff',
     padding: 5,
     marginBottom: 10,
@@ -31,7 +31,7 @@ export const styles = StyleSheet.create({
     borderRadius: 6,
   },
   textoProduto: {
-    color: '#160b30',
+    color: '#002855',
     fontWeight: 'bold',
   },
   overlayModal: {
@@ -42,7 +42,7 @@ export const styles = StyleSheet.create({
   },
   modalCard: {
     backgroundColor: '#fff',
-    borderColor: '#160b30',
+    borderColor: '#002855',
     borderWidth: 1,
     width: '80%',
     padding: 20,
@@ -53,7 +53,7 @@ export const styles = StyleSheet.create({
   tituloModal: {
     textAlign: 'center',
     fontWeight: 'bold',
-    color: '#160b30',
+    color: '#002855',
   },
   linhaModal: {
     flexDirection: 'row',
@@ -66,8 +66,8 @@ export const styles = StyleSheet.create({
     flex: 1,
     borderRadius: 6,
     borderWidth: 1,
-    borderColor: '#160b30',
-    color: '#160b30',
+    borderColor: '#002855',
+    color: '#002855',
   },
   caixaFoto: {
     justifyContent: 'center',
@@ -80,7 +80,7 @@ export const styles = StyleSheet.create({
     borderRadius: 6,
   },
   textoAdicionar: {
-    color: '#160b30',
+    color: '#002855',
     fontWeight: 'bold',
   },
   botaoFechar: {
@@ -95,11 +95,11 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#160b30',
+    borderColor: '#002855',
   },
   textoFechar: {
     fontWeight: 'bold',
     fontSize: 16,
-    color: '#160b30',
+    color: '#002855',
   },
 });

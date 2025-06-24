@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
     borderRadius: 6,
   },
   voltarText: {
-    color: '#160b30',
+    color: '#002855',
     fontWeight: 'bold',
   },
   filtroRow: {
@@ -23,7 +23,7 @@ export const styles = StyleSheet.create({
     marginBottom: 10,
   },
   filtroBtn: {
-    backgroundColor: '#160b30',
+    backgroundColor: '#002855',
     padding: 10,
     borderRadius: 6,
   },
@@ -35,12 +35,12 @@ export const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
     margin: 10,
     borderWidth: 1,
-    borderColor: '#160b30',
+    borderColor: '#002855',
     borderRadius: 8,
   },
   header: {
     flexDirection: 'row',
-    backgroundColor: '#160b30',
+    backgroundColor: '#002855',
     padding: 10,
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
@@ -61,7 +61,7 @@ export const styles = StyleSheet.create({
   col: {
     flex: 1,
     textAlign: 'center',
-    color: '#160b30',
+    color: '#002855',
     fontWeight: '500',
   },
 });
