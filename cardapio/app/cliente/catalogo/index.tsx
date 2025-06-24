@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,12 +7,12 @@ import {
   Image,
   Alert,
   StyleSheet,
-} from 'react-native';
-import { Tooltip } from 'react-native-elements';
-import { router } from 'expo-router';
-import { useCarrinho } from '../../../hooks/useCarrinho';
-import ProtectedRoute from '../../../components/ProtectedRoute';
-import { styles } from './catalogo.styles';
+} from "react-native";
+import { Tooltip } from "react-native-elements";
+import { router } from "expo-router";
+import { useCarrinho } from "../../../hooks/useCarrinho";
+import ProtectedRoute from "../../../components/ProtectedRoute";
+import { styles } from "./catalogo.styles";
 
 interface Produto {
   id: number;
@@ -34,17 +34,17 @@ function CatalogoClienteContent() {
 
   async function carregarCategorias() {
     try {
-      const res = await fetch('http://localhost:3004/categorias');
+      const res = await fetch("http://localhost:3004/categorias");
       const data = await res.json();
       setCategorias(data);
     } catch (error) {
-      console.error('Erro ao carregar categorias:', error);
+      console.error("Erro ao carregar categorias:", error);
     }
   }
 
   function adicionarAoCarrinho(produto: Produto) {
     adicionar(produto);
-    Alert.alert('Adicionado', `${produto.nome} foi adicionado ao carrinho.`);
+    Alert.alert("Adicionado", `${produto.nome} foi adicionado ao carrinho.`);
   }
 
   useEffect(() => {
@@ -57,9 +57,15 @@ function CatalogoClienteContent() {
     <View style={{ flex: 1 }}>
       <ScrollView style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.logo}>LOGO</Text>
+          <Image
+            source={require("../../../assets/images/logo2.png")}
+            style={{ width: 60, height: 60,  borderRadius: 8}}
+          />
           <View style={styles.headerButtons}>
-            <TouchableOpacity style={styles.botaoTopo} onPress={() => router.push('/cliente/pedido/index')}>
+            <TouchableOpacity
+              style={styles.botaoTopo}
+              onPress={() => router.push("/cliente/pedido/index")}
+            >
               <Text style={styles.botaoTopoTexto}>Pedidos</Text>
             </TouchableOpacity>
           </View>
@@ -71,7 +77,10 @@ function CatalogoClienteContent() {
             {categoria.produtos.map((produto) => (
               <View key={produto.id} style={styles.cardProduto}>
                 {produto.foto && (
-                  <Image source={{ uri: produto.foto }} style={styles.fotoProduto} />
+                  <Image
+                    source={{ uri: produto.foto }}
+                    style={styles.fotoProduto}
+                  />
                 )}
                 <View style={styles.infoProduto}>
                   <View style={styles.linhaNome}>
@@ -80,7 +89,9 @@ function CatalogoClienteContent() {
                       <Tooltip
                         popover={
                           <View style={{ padding: 6 }}>
-                            <Text style={{ fontSize: 12 }}>{produto.descricao}</Text>
+                            <Text style={{ fontSize: 12 }}>
+                              {produto.descricao}
+                            </Text>
                           </View>
                         }
                         backgroundColor="#fff"
@@ -93,7 +104,9 @@ function CatalogoClienteContent() {
                       </Tooltip>
                     )}
                   </View>
-                  <Text style={styles.valorProduto}>R$ {produto.valor.toFixed(2)}</Text>
+                  <Text style={styles.valorProduto}>
+                    R$ {produto.valor.toFixed(2)}
+                  </Text>
 
                   <TouchableOpacity
                     style={styles.botaoAdicionar}
@@ -111,10 +124,10 @@ function CatalogoClienteContent() {
       {totalItens > 0 && (
         <TouchableOpacity
           style={estilo.botaoCarrinhoFixo}
-          onPress={() => router.push('/cliente/carrinho')}
+          onPress={() => router.push("/cliente/carrinho")}
         >
           <Text style={estilo.textoBotaoCarrinho}>
-            Ver Carrinho ({totalItens}) item{totalItens > 1 ? 's' : ''}
+            Ver Carrinho ({totalItens}) item{totalItens > 1 ? "s" : ""}
           </Text>
         </TouchableOpacity>
       )}
@@ -132,13 +145,13 @@ export default function CatalogoCliente() {
 
 const estilo = StyleSheet.create({
   botaoCarrinhoFixo: {
-    backgroundColor: '#160b30',
+    backgroundColor: "#002855",
     paddingVertical: 16,
-    alignItems: 'center',
+    alignItems: "center",
   },
   textoBotaoCarrinho: {
-    color: '#fff',
-    fontWeight: 'bold',
+    color: "#fff",
+    fontWeight: "bold",
     fontSize: 16,
   },
 });

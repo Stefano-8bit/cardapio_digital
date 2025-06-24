@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
   botaoVerde: { backgroundColor: '#00cc66' },
   botaoTexto: { fontWeight: 'bold', fontSize: 15 },
   voltarBotao: {
-    backgroundColor: '#160b30',
+    backgroundColor: '#002855',
     padding: 16,
     alignItems: 'center',
   },

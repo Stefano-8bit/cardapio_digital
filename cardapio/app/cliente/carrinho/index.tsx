@@ -66,9 +66,10 @@ function CarrinhoContent() {
 
   return (
     <ScrollView style={styles.container}>
-      <TouchableOpacity style={styles.botaoVoltar} onPress={() => router.back()}>
-        <Text style={styles.textoBotaoVoltar}>← Voltar</Text>
-      </TouchableOpacity>
+      <TouchableOpacity style={styles.botaoVoltar} onPress={() => router.push('/cliente/catalogo')}>
+  <Text style={styles.textoBotaoVoltar}>← Voltar</Text>
+</TouchableOpacity>
+
 
       <Text style={styles.titulo}>Seu Carrinho</Text>
 
