@@ -40,7 +40,8 @@ export const styles = StyleSheet.create({
     marginBottom: 24,
   },
   categoriaTitulo: {
-    backgroundColor: '#ddd',
+    backgroundColor: '#160b30',
+    color: '#fff',
     padding: 6,
     marginBottom: 10,
     fontWeight: 'bold',
@@ -88,4 +89,21 @@ export const styles = StyleSheet.create({
     color: '#160b30',
     fontWeight: 'bold',
   },
+  linhaNome: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  interrogacao: {
+    backgroundColor: '#e6f0ff',
+    color: '#160b30',
+    fontWeight: 'bold',
+    paddingHorizontal: 8,
+    borderRadius: 100,
+    textAlign: 'center',
+    lineHeight: 18,
+    fontSize: 16,
+  },
+
+
 });

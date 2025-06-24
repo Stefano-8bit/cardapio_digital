@@ -8,6 +8,7 @@ import {
   Alert,
   StyleSheet,
 } from 'react-native';
+import { Tooltip } from 'react-native-elements';
 import { router } from 'expo-router';
 import { useCarrinho } from '../../../hooks/useCarrinho';
 import ProtectedRoute from '../../../components/ProtectedRoute';
@@ -73,9 +74,27 @@ function CatalogoClienteContent() {
                   <Image source={{ uri: produto.foto }} style={styles.fotoProduto} />
                 )}
                 <View style={styles.infoProduto}>
-                  <Text style={styles.nomeProduto}>{produto.nome}</Text>
+                  <View style={styles.linhaNome}>
+                    <Text style={styles.nomeProduto}>{produto.nome}</Text>
+                    {produto.descricao && (
+                      <Tooltip
+                        popover={
+                          <View style={{ padding: 6 }}>
+                            <Text style={{ fontSize: 12 }}>{produto.descricao}</Text>
+                          </View>
+                        }
+                        backgroundColor="#fff"
+                        overlayColor="transparent"
+                        withPointer
+                        height={60}
+                        width={160}
+                      >
+                        <Text style={styles.interrogacao}>!</Text>
+                      </Tooltip>
+                    )}
+                  </View>
                   <Text style={styles.valorProduto}>R$ {produto.valor.toFixed(2)}</Text>
-                  {produto.descricao && <Text style={styles.descProduto}>{produto.descricao}</Text>}
+
                   <TouchableOpacity
                     style={styles.botaoAdicionar}
                     onPress={() => adicionarAoCarrinho(produto)}
