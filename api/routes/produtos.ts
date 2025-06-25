@@ -83,4 +83,30 @@ router.delete("/:id", async (req, res) => {
   }
 })
 
+router.put("/:id/ocultar", async (req, res) => {
+  const { id } = req.params;
+  const { oculto } = req.body;
+
+  try {
+    const atualizado = await prisma.produto.update({
+      where: { id: Number(id) },
+      data: { oculto },
+    });
+    res.status(200).json(atualizado);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    await prisma.produto.delete({ where: { id: Number(id) } });
+    res.status(204).send();
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
+
 export default router

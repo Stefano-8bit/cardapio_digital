@@ -32,6 +32,7 @@ model Produto {
   categoria   Categoria  @relation(fields: [categoriaId], references: [id])
   createdAt   DateTime   @default(now())
   pedidos     Pedido[]
+  oculto      Boolean    @default(false)
 }
 
 model Usuario {

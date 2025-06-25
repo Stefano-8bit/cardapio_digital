@@ -36,7 +36,11 @@ function CatalogoClienteContent() {
     try {
       const res = await fetch("http://localhost:3004/categorias");
       const data = await res.json();
-      setCategorias(data);
+      const filtrado = data.map((cat: Categoria) => ({
+        ...cat,
+        produtos: cat.produtos.filter((p: any) => !p.oculto),
+      }));
+      setCategorias(filtrado);
     } catch (error) {
       console.error("Erro ao carregar categorias:", error);
     }
@@ -59,7 +63,7 @@ function CatalogoClienteContent() {
         <View style={styles.header}>
           <Image
             source={require("../../../assets/images/logo2.png")}
-            style={{ width: 60, height: 60,  borderRadius: 8}}
+            style={{ width: 60, height: 60, borderRadius: 8 }}
           />
           <View style={styles.headerButtons}>
             <TouchableOpacity
