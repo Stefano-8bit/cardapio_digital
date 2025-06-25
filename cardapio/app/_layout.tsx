@@ -4,11 +4,6 @@ import { PedidoProvider } from '../hooks/usePedido';
 import { AuthProvider, useAuth } from '../hooks/useAuth';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-function LogoutButton() {
-  const { logout } = useAuth();
-
-}
-
 export default function Layout() {
   return (
     <AuthProvider>
@@ -16,7 +11,6 @@ export default function Layout() {
         <CarrinhoProvider>
           <View style={{ flex: 1 }}>
             <Slot />
-            <LogoutButton />
           </View>
         </CarrinhoProvider>
       </PedidoProvider>
