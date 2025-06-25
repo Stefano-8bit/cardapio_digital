@@ -55,7 +55,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 10,
     minWidth: 100,
-    maxWidth: '50%',
+    maxWidth: '100%',
   },
 
   imagemProduto: {
@@ -200,5 +200,26 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
     color: '#002855',
+  },
+
+    tituloCategoriaComBotao: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#002855',
+    padding: 5,
+    marginBottom: 10,
+  },
+
+  botaoExcluirCategoria: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    backgroundColor: '#ffd700'
+  },
+
+  textoExcluir: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
 });

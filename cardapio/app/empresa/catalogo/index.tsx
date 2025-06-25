@@ -55,6 +55,17 @@ function CatalogoInterno() {
     }
   }
 
+  async function excluirCategoria(id: number) {
+    try {
+      await fetch(`http://localhost:3004/categorias/${id}`, {
+        method: 'DELETE',
+      });
+      carregarCategorias();
+    } catch (err) {
+      Alert.alert('Erro ao excluir categoria');
+    }
+  }
+
   async function salvarItem() {
     const payload = {
       nome: formulario.nome,
@@ -175,7 +186,22 @@ function CatalogoInterno() {
 
       {categorias.map((categoria) => (
         <View key={categoria.id} style={styles.secao}>
-          <Text style={styles.tituloSecao}>{categoria.nome}</Text>
+          <View style={{ position: 'relative', paddingRight: 24 }}>
+            <Text style={styles.tituloSecao}>{categoria.nome} | ID: {categoria.id}</Text>
+
+            <TouchableOpacity
+              onPress={() => excluirCategoria(categoria.id)}
+              style={{
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                padding: 4,
+              }}
+            >
+              <Text style={{ color: 'ffd700', fontWeight: 'bold', fontSize: 18 }}>✕</Text>
+            </TouchableOpacity>
+          </View>
+
           <View style={styles.linhaProdutos}>
             {categoria.produtos.map((produto) => (
               <View
@@ -195,6 +221,7 @@ function CatalogoInterno() {
                 <View style={styles.infoProduto}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
                     <Text style={styles.nomeProduto}>{produto.nome}</Text>
+                    
                     {produto.oculto && (
                       <MaterialIcons name="visibility-off" size={16} color="#666" />
                     )}

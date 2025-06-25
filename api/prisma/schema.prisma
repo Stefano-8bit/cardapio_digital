@@ -29,7 +29,7 @@ model Produto {
   valor       Float
   foto        String?    @db.VarChar(255)
   categoriaId Int
-  categoria   Categoria  @relation(fields: [categoriaId], references: [id])
+  categoria   Categoria  @relation(fields: [categoriaId], references: [id], onDelete: Cascade)
   createdAt   DateTime   @default(now())
   pedidos     Pedido[]
   oculto      Boolean    @default(false)
