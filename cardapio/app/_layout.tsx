@@ -7,11 +7,6 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 function LogoutButton() {
   const { logout } = useAuth();
 
-  return (
-    <TouchableOpacity style={styles.logoutButton} onPress={logout}>
-      <Text style={styles.logoutText}>Logout</Text>
-    </TouchableOpacity>
-  );
 }
 
 export default function Layout() {
