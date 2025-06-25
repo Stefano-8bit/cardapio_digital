@@ -83,7 +83,7 @@ export default function KDS() {
     switch (status.toLowerCase()) {
       case 'confirmado': return '#160b30';
       case 'cancelado': return '#ff4d4d';
-      case 'pronto': return '#ffd700';
+      case 'pronto': return '#00FF00';
       default: return '#999';
     }
   };
