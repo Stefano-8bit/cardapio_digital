@@ -9,7 +9,7 @@ export default function Home() {
       <View style={styles.container}>
         <View style={styles.logoContainer}>
           <Image
-            source={require('../../../assets/images/logo.png')}
+            source={require('../../../assets/images/logo2.png')}
             style={styles.logo}
             resizeMode="contain"
           />

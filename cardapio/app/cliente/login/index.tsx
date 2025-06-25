@@ -135,13 +135,18 @@ export default function LoginCliente() {
               onChangeText={setCpfCadastro}
             />
             <TextInput
-              placeholder="Senha"
-              placeholderTextColor="#999"
-              style={styles.input}
-              secureTextEntry
-              value={senhaCadastro}
-              onChangeText={setSenhaCadastro}
-            />
+  placeholder="Senha"
+  placeholderTextColor="#999"
+  style={styles.input}
+  secureTextEntry
+  value={senhaCadastro}
+  onChangeText={setSenhaCadastro}
+/>
+<Text style={styles.regrasSenha}>
+  A senha deve ter no mínimo 8 caracteres, incluindo letra maiúscula, minúscula, número e símbolo.
+</Text>
+
+
             <TouchableOpacity style={styles.button} onPress={handleCadastro}>
               <Text style={styles.buttonText}>Cadastrar</Text>
             </TouchableOpacity>

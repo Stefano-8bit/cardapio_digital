@@ -58,5 +58,11 @@ titulo: {
   marginBottom: 12,
   textAlign: 'center',
 },
+regrasSenha: {
+  fontSize: 12,
+  color: '#555',
+  marginTop: -6,
+  marginBottom: 12,
+},
 
 });

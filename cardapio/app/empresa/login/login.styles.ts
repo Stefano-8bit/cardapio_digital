@@ -41,4 +41,29 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
+  modalContainer: {
+  flex: 1,
+  backgroundColor: 'rgba(0,0,0,0.5)',
+  justifyContent: 'center',
+  alignItems: 'center',
+},
+modalContent: {
+  backgroundColor: '#fff',
+  padding: 20,
+  borderRadius: 8,
+  width: '85%',
+},
+titulo: {
+  fontSize: 18,
+  fontWeight: 'bold',
+  marginBottom: 12,
+  textAlign: 'center',
+},
+regrasSenha: {
+  fontSize: 12,
+  color: '#555',
+  marginTop: -6,
+  marginBottom: 12,
+}
+,
 });
