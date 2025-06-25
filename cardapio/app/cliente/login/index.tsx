@@ -16,6 +16,8 @@ export default function LoginCliente() {
   const [nomeCadastro, setNomeCadastro] = useState('');
   const [cpfCadastro, setCpfCadastro] = useState('');
   const [senhaCadastro, setSenhaCadastro] = useState('');
+  const [erroSenha, setErroSenha] = useState(false);
+  const [erroCpf, setErroCpf] = useState(false);
 
   const handleLogin = async () => {
     if (!cpf || !senha) {
@@ -67,10 +69,27 @@ export default function LoginCliente() {
       const data = await res.json();
 
       if (!res.ok) {
-        Alert.alert('Erro', data?.erro || 'Erro ao cadastrar');
-        return;
-      }
+  const erro = data?.erro || data?.message || JSON.stringify(data);
 
+  if (erro.toLowerCase().includes('senha')) {
+    setErroSenha(true);
+    setErroCpf(false);
+    Alert.alert('Senha inválida', erro);
+  } else if (erro.toLowerCase().includes('cpf') || erro.includes('P2002')) {
+    setErroCpf(true);
+    setErroSenha(false);
+    Alert.alert('CPF já cadastrado', 'Esse CPF já está em uso. Tente fazer login.');
+  } else {
+    setErroCpf(false);
+    setErroSenha(false);
+    Alert.alert('Erro', erro || 'Erro ao cadastrar');
+  }
+
+  return;
+}
+
+      setErroSenha(false);
+      setErroCpf(false);
       Alert.alert('Sucesso', 'Cadastro realizado. Agora faça login.');
       setShowModal(false);
     } catch (err) {
@@ -95,7 +114,7 @@ export default function LoginCliente() {
           value={cpf}
           onChangeText={setCpf}
         />
-        <Text style={styles.label}>Senha:</Text>
+        <Text style={styles.label}>SENHA:</Text>
         <TextInput
           placeholder="Digite sua senha"
           placeholderTextColor="#999"
@@ -109,11 +128,13 @@ export default function LoginCliente() {
           <Text style={styles.buttonText}>Entrar</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => setShowModal(true)}>
-          <Text style={{ color: '#160b30', textAlign: 'center', marginTop: 12 }}>
-            Não tem conta? Cadastre-se
-          </Text>
-        </TouchableOpacity>
+        <View>
+          <TouchableOpacity onPress={() => setShowModal(true)}>
+            <Text style={{ color: '#160b30', textAlign: 'center', marginTop: 12 }}>
+              Não tem conta? Cadastre-se
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <Modal visible={showModal} transparent animationType="slide">
@@ -130,22 +151,21 @@ export default function LoginCliente() {
             <TextInput
               placeholder="CPF"
               placeholderTextColor="#999"
-              style={styles.input}
+              style={[styles.input, erroCpf && styles.inputErro]}
               value={cpfCadastro}
               onChangeText={setCpfCadastro}
             />
             <TextInput
-  placeholder="Senha"
-  placeholderTextColor="#999"
-  style={styles.input}
-  secureTextEntry
-  value={senhaCadastro}
-  onChangeText={setSenhaCadastro}
-/>
-<Text style={styles.regrasSenha}>
-  A senha deve ter no mínimo 8 caracteres, incluindo letra maiúscula, minúscula, número e símbolo.
-</Text>
-
+              placeholder="Senha"
+              placeholderTextColor="#999"
+              style={[styles.input, erroSenha && styles.inputErro]}
+              secureTextEntry
+              value={senhaCadastro}
+              onChangeText={setSenhaCadastro}
+            />
+            <Text style={styles.regrasSenha}>
+              A senha deve ter no mínimo 8 caracteres, incluindo letra maiúscula, minúscula, número e símbolo.
+            </Text>
 
             <TouchableOpacity style={styles.button} onPress={handleCadastro}>
               <Text style={styles.buttonText}>Cadastrar</Text>

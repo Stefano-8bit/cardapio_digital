@@ -64,5 +64,13 @@ regrasSenha: {
   marginTop: -6,
   marginBottom: 12,
 },
+inputErro: {
+  borderColor: '#b00020',
+  shadowColor: '#b00020',
+  shadowOffset: { width: 0, height: 0 },
+  shadowOpacity: 0.8,
+  shadowRadius: 4,
+},
+
 
 });
