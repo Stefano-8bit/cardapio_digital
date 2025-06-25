@@ -8,9 +8,12 @@ type Pedido = {
   id: number;
   valor: number;
   status: string;
+  horario: string;
+  updatedAt: string;
   produto: { nome: string };
   usuario: { nome: string };
 };
+
 
 function HistoricoInterno() {
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
@@ -56,20 +59,24 @@ function HistoricoInterno() {
 
       <View style={styles.tabela}>
         <View style={styles.header}>
-          <Text style={styles.colHeader}>Id Produto</Text>
-          <Text style={styles.colHeader}>Nome Cliente</Text>
-          <Text style={styles.colHeader}>Produto</Text>
-          <Text style={styles.colHeader}>Valor</Text>
-        </View>
+  <Text style={styles.colHeader}>Id Produto</Text>
+  <Text style={styles.colHeader}>Nome Cliente</Text>
+  <Text style={styles.colHeader}>Produto</Text>
+  <Text style={styles.colHeader}>Valor</Text>
+  <Text style={styles.colHeader}>Criado</Text>
+  <Text style={styles.colHeader}>Atualizado</Text>
+</View>
 
-        {pedidosFiltrados.map((p) => (
-          <View key={p.id} style={styles.row}>
-            <Text style={styles.col}>{p.id}</Text>
-            <Text style={styles.col}>{p.usuario?.nome || 'Cliente'}</Text>
-            <Text style={styles.col}>{p.produto?.nome || 'Produto'}</Text>
-            <Text style={styles.col}>R$ {p.valor.toFixed(2)}</Text>
-          </View>
-        ))}
+{pedidosFiltrados.map((p) => (
+  <View key={p.id} style={styles.row}>
+    <Text style={styles.col}>{p.id}</Text>
+    <Text style={styles.col}>{p.usuario?.nome || 'Cliente'}</Text>
+    <Text style={styles.col}>{p.produto?.nome || 'Produto'}</Text>
+    <Text style={styles.col}>R$ {p.valor.toFixed(2)}</Text>
+    <Text style={styles.col}>{new Date(p.horario).toLocaleTimeString()}</Text>
+    <Text style={styles.col}>{new Date(p.updatedAt).toLocaleTimeString()}</Text>
+  </View>
+))}
       </View>
     </ScrollView>
   );
